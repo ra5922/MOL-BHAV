@@ -8,6 +8,13 @@
 <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
 <link href="https://fonts.googleapis.com/css2?family=Rozha+One&family=Manrope:wght@400;500;600;700;800&display=swap" rel="stylesheet">
 <style>
+  html, body {
+  margin: 0;
+  padding: 0;
+  width: 100%;
+  min-height: 100%;
+  background: #11172E;
+}
   :root{
     --yellow:#F8D299;
     --blue:#11172E;
@@ -41,8 +48,8 @@
 }
   @media (min-width:1100px){ .phone{ width:min(440px,100%); } }
   @media (max-width:480px){
-    body{ padding:0; }
-    .phone{ height:100vh; height:100dvh; min-height:0; max-height:none; border-radius:0; box-shadow:none; }
+    body{ padding:0;margin:0;  }
+    .phone{ width:100%;height:100vh; height:100dvh; min-height:0; max-height:none; border-radius:0; box-shadow:none; }
   }
   .phone.shake{ animation:shake .5s ease; }
   @keyframes shake{ 0%,100%{transform:translateX(0);} 20%{transform:translateX(-8px);} 40%{transform:translateX(7px);} 60%{transform:translateX(-5px);} 80%{transform:translateX(4px);} }

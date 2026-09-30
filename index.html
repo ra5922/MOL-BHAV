@@ -8,6 +8,13 @@
 <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
 <link href="https://fonts.googleapis.com/css2?family=Rozha+One&family=Playfair+Display:wght@500;600;700&family=Manrope:wght@400;500;600;700;800&display=swap" rel="stylesheet">
 <style>
+  html, body {
+  margin: 0;
+  padding: 0;
+  width: 100%;
+  min-height: 100%;
+  background: #11172E;
+}
   /* ============================================================
      YOUR EXACT ORIGINAL CSS (UNCHANGED)
      ============================================================ */
@@ -60,7 +67,7 @@
   }
   .phone{
     width:min(420px,100%); min-height:680px; height:92vh; max-height:920px;
-    background:var(--paper);
+    background:linear-gradient(180deg, var(--blue) 0%, var(--blue) 68%, var(--purple) 100%);
     border-radius:26px;
     box-shadow: 0 30px 60px rgba(0,0,0,0.45), 0 2px 0 rgba(255,255,255,0.4) inset;
     padding:20px 18px; display:flex; flex-direction:column; position:relative; overflow:hidden;
