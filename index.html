@@ -59,12 +59,15 @@
   html,body{ height:100%; margin:0; }
   body{
     min-height:100vh; display:flex; align-items:center; justify-content:center;
-    background: linear-gradient(180deg, var(--home-1) 0%, var(--home-2) 100%);
+    background:
+      radial-gradient(circle at 20% 15%, rgba(217,164,65,0.10), transparent 40%),
+      radial-gradient(circle at 85% 80%, rgba(166,71,46,0.12), transparent 45%),
+      linear-gradient(160deg, var(--bg-deep), var(--bg-deep-2));
     font-family:'Manrope', sans-serif; color:var(--ink); padding:24px 12px;
   }
   .phone{
     width:min(420px,100%); min-height:680px; height:92vh; max-height:920px;
-    background: transparent;
+    background:linear-gradient(180deg, var(--home-1) 0%, var(--home-1) 68%, var(--home-2) 100%);
     border-radius:26px;
     box-shadow: 0 30px 60px rgba(0,0,0,0.45), 0 2px 0 rgba(255,255,255,0.4) inset;
     padding:20px 18px; display:flex; flex-direction:column; position:relative; overflow:hidden;
@@ -292,19 +295,18 @@
     html, body{
       margin:0; padding:0; width:100%; height:100%;
       overflow:hidden;
-      background: linear-gradient(180deg, var(--home-1) 0%, var(--home-2) 100%);
+      background:var(--home-1);
     }
     .phone{
       position:fixed; inset:0;
       width:100%; height:100%; height:100dvh;
       padding:0; border-radius:0; box-shadow:none;
-      background: transparent;
+      background:linear-gradient(180deg, var(--home-1) 0%, var(--home-1) 68%, var(--home-2) 100%);
     }
     #screen-home{
       margin:0;
       padding:calc(16px + env(safe-area-inset-top, 0px)) 12px calc(10px + env(safe-area-inset-bottom, 0px));
       border-radius:0;
-      background: transparent;
     }
     .cat-carousel{ margin:0 -12px; }
   }
