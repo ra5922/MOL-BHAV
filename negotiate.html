@@ -1,0 +1,1019 @@
+<html lang="en">
+<head>
+<meta charset="UTF-8" />
+<meta name="viewport" content="width=device-width, initial-scale=1.0, viewport-fit=cover" />
+<title>Mol Bhav — Negotiate</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Rozha+One&family=Manrope:wght@400;500;600;700;800&display=swap" rel="stylesheet">
+<style>
+  :root{
+    --yellow:
+#F8D299;
+    --blue:
+#11172E;
+    --purple:
+#3B3561;
+    --gray:
+#D9D9D9;
+    --bubble-gray:
+#F5F5F5;
+    --black:
+#111111;
+    --white:
+#FFFFFF;
+    --tan:
+#E1D2B2;
+  }
+  *{ box-sizing:border-box; margin:0; padding:0; }
+  button{ font-family:inherit; -webkit-tap-highlight-color:transparent; }
+  html,body{ height:100%; }
+  /* ---- page + phone shell (same as your other screens) ---- */
+  body{
+    min-height:100vh; display:flex; align-items:center; justify-content:center;
+    background:
+      radial-gradient(circle at 20% 15%, rgba(217,164,65,0.10), transparent 40%),
+      radial-gradient(circle at 85% 80%, rgba(166,71,46,0.12), transparent 45%),
+      linear-gradient(160deg, 
+#1E2438, 
+#141828);
+    font-family:'Manrope', sans-serif; color:var(--white); padding:24px 12px;
+  }
+  .confirm-overlay{
+  position:absolute; inset:0; background:rgba(0,0,0,0.55);
+  display:none; align-items:center; justify-content:center; z-index:200;
+  opacity:0; transition:opacity .2s ease;
+}
+.confirm-overlay.open{ display:flex; opacity:1; }
+.confirm-box{
+  background:var(--purple); color:#fff; border-radius:18px; padding:22px 20px;
+  width:82%; max-width:320px; text-align:center; box-shadow:0 20px 50px rgba(0,0,0,0.5);
+  transform:scale(0.85); opacity:0; transition:transform .25s cubic-bezier(.34,1.4,.64,1), opacity .2s ease;
+}
+.confirm-overlay.open .confirm-box{ transform:scale(1); opacity:1; }
+.confirm-text{ font-family:'Manrope', sans-serif; font-size:14px; font-weight:600; color:#fff; margin:0 0 18px; line-height:1.5; }
+.confirm-actions{ display:flex; gap:10px; }
+.confirm-btn{ flex:1; border:none; border-radius:12px; padding:11px 14px; font-family:'Manrope', sans-serif; font-weight:800; font-size:13px; cursor:pointer; }
+.confirm-cancel{ background:rgba(255,255,255,0.14); color:#fff; }
+.confirm-cancel:hover{ background:rgba(255,255,255,0.22); }
+.confirm-leave{ background:var(--yellow); color:#000; }
+.confirm-leave:hover{ background:#f3c67e; }
+  .phone{
+    width:min(420px,100%); height:92vh; min-height:680px; max-height:920px;
+    border-radius:26px; overflow:hidden; position:relative;
+    display:flex; flex-direction:column;
+    background:linear-gradient(180deg, var(--blue) 0%, var(--blue) 72%, var(--purple) 100%);
+    box-shadow:0 30px 60px rgba(0,0,0,0.45), 0 2px 0 rgba(255,255,255,0.12) inset;
+  }
+  @media (min-width:1100px){ .phone{ width:min(440px,100%); } }
+  @media (max-width:480px){
+    body{ padding:0; }
+    .phone{ height:100vh; height:100dvh; min-height:0; max-height:none; border-radius:0; box-shadow:none; }
+  }
+  /* ---- top bar ---- */
+  .top-bar{ display:flex; align-items:center; justify-content:space-between; padding:16px 20px 8px; flex-shrink:0; }
+  .back-btn{ background:none; border:none; font-family:'Manrope', sans-serif; font-weight:700; font-size:13px; color:#fff; cursor:pointer; padding:4px 6px; display:inline-flex; align-items:center; gap:4px; }
+.back-btn:hover{ opacity:.8; }
+  .round-label{ font-size:11px; font-weight:800; letter-spacing:0.8px; text-transform:uppercase; color:rgba(255,255,255,0.75); }
+  .round-label.low{ color:var(--yellow); }
+  .sound-toggle{ background:none; border:none; color:#fff; font-size:18px; cursor:pointer; }
+  /* ---- white header card ---- */
+  .neg-header{ padding:4px 18px 14px; flex-shrink:0; }
+  .header-card{
+    background:#fff url('IMAGES/app.jpg') center / cover no-repeat;
+    color:var(--black); border-radius:18px; padding:14px 16px 16px;
+    box-shadow:0 10px 24px rgba(0,0,0,0.25);
+  }
+  .contact-row{ display:flex; align-items:center; gap:12px; }
+  .avatar-hero{
+    width:52px; height:52px; border-radius:50%; flex-shrink:0;
+    background:var(--gray); border:3px solid var(--tan);
+    display:flex; align-items:center; justify-content:center; font-size:26px;
+  }
+  .avatar-hero.bounce{ animation:avatarBounce .5s ease; }
+  .contact-meta{ flex:1; min-width:0; }
+  .contact-name{ font-size:16px; font-weight:800; line-height:1.2; color:var(--black); }
+  .contact-status{ font-size:12px; font-weight:600; line-height:1.3; margin-top:2px; color:var(--black); }
+  .price-hero{ font-family:'Rozha One', serif; font-size:24px; line-height:1; color:var(--blue); flex-shrink:0; }
+  .bars-row{ display:flex; gap:14px; margin-top:14px; }
+  .bar-block{ flex:1; min-width:0; display:flex; flex-direction:column; gap:6px; }
+    .bar-label{
+    display:flex; justify-content:space-between; gap:6px;
+    font-size:9px; 
+    font-weight:800; letter-spacing:0.6px;
+    text-transform:uppercase; color:
+#111111; 
+    text-shadow: 0 0 4px rgba(255,255,255,0.8);
+  }
+  .bar-track, .trust-track{ height:4px; border-radius:4px; background:var(--gray); position:relative; }
+  .bar-track{ overflow:hidden; }
+  .bar-fill{ 
+    height:100%; border-radius:4px; 
+    background:
+#067d32; /* CHANGED TO GREEN */
+    transition:width .5s ease; 
+  }
+  .trust-marker{
+    position:absolute; top:50%; width:12px; height:12px; border-radius:50%;
+    background:var(--yellow); border:2px solid var(--blue);
+    transform:translate(-50%,-50%); transition:left .5s ease;
+  }
+  /* ---- chat ---- */
+  .chat-thread{
+    flex:1; min-height:0; overflow-y:auto; padding:14px 18px;
+    display:flex; flex-direction:column; gap:14px; scrollbar-width:none;
+  }
+  .chat-thread::-webkit-scrollbar{ display:none; }
+  .msg-row{ display:flex; align-items:flex-end; gap:8px; max-width:88%; animation:bubbleIn .25s ease; }
+  .msg-row.them{ align-self:flex-start; }
+  .msg-row.you{ align-self:flex-end; }
+  .mood-emoji{ font-size:24px; line-height:1; flex-shrink:0; margin-bottom:4px; animation:emojiPop .35s cubic-bezier(.34,1.56,.64,1); }
+  .chat-bubble{ padding:13px 18px; border-radius:20px; font-size:14.5px; line-height:1.4; font-weight:600; word-break:break-word; color:var(--black); }
+  .chat-bubble.them{ background:var(--bubble-gray); border-bottom-left-radius:6px; }
+  .chat-bubble.you{ background:var(--yellow); border-bottom-right-radius:6px; box-shadow:0 6px 16px rgba(0,0,0,0.18); }
+  .chat-caption{ align-self:center; text-align:center; font-size:13.5px; font-weight:700; color:rgba(255,255,255,0.4); margin:2px 0; }
+  .chat-caption.system{ background:
+#F5F5F5; padding:6px 14px; border-radius:20px; font-size:12px; color:
+#11172E}
+  .typing-dots span{ display:inline-block; width:6px; height:6px; margin:0 2px; border-radius:50%; background:var(--black); animation:typingBounce 1s infinite ease-in-out; }
+  .typing-dots span:nth-child(2){ animation-delay:.15s; }
+  .typing-dots span:nth-child(3){ animation-delay:.3s; }
+  @keyframes bubbleIn{ from{ opacity:0; transform:translateY(6px); } to{ opacity:1; transform:translateY(0); } }
+  @keyframes emojiPop{ from{ opacity:0; transform:scale(.4); } to{ opacity:1; transform:scale(1); } }
+  @keyframes avatarBounce{ 0%{transform:scale(1) rotate(0);} 40%{transform:scale(1.2) rotate(-8deg);} 70%{transform:scale(.95) rotate(4deg);} 100%{transform:scale(1) rotate(0);} }
+  @keyframes typingBounce{ 0%,60%,100%{ transform:translateY(0); opacity:.5; } 30%{ transform:translateY(-4px); opacity:1; } }
+  /* ---- input area ---- */
+  .input-area{ flex-shrink:0; display:flex; flex-direction:column; gap:10px; padding:14px 18px 18px; border-top:1px solid rgba(255,255,255,0.55); }
+  .input-row{ display:flex; gap:10px; }
+  .input-row input{
+    flex:1; min-width:0; border:none; outline:none; border-radius:999px;
+    background:#fff; color:var(--black); padding:8px 16px; font-family:inherit; font-size:12.5px; font-weight:700;
+  }
+  .input-row input::placeholder{ color:var(--black); opacity:.85; font-weight:800; }
+  .input-row button{
+    border:none; border-radius:999px; padding:0 16px; cursor:pointer;
+    background:var(--yellow); color:var(--black); font-size:12.5px; font-weight:800;
+    transition:transform .15s ease;
+  }
+  .input-row button:active{ transform:scale(.96); }
+  .input-row input:disabled, .input-row button:disabled{ opacity:.6; cursor:default; }
+  .dropdown-container{ position:static; }
+  .input-area{ position:relative; border-top:1px solid rgba(255,255,255,0.14); }
+  .dropdown-toggle{
+    width:100%; border:none; border-radius:12px; background:#fff; color:var(--black);
+    padding:9px 16px; display:flex; align-items:center; justify-content:center; gap:10px;
+    font-size:12.5px; font-weight:800; cursor:pointer;
+  }
+  .dropdown-toggle .arrow{ transition:transform .3s ease; flex-shrink:0; }
+  .dropdown-toggle.open .arrow{ transform:rotate(180deg); }
+  .dropdown-toggle:disabled{ opacity:.6; cursor:default; }
+ 
+  .dropdown-menu{
+  position:absolute; left:18px; right:18px;
+  bottom:calc(100% + 8px);
+  z-index:100; display:none; flex-direction:column; gap:4px;
+  background:#f0f0f0ee;
+  border-radius:18px; padding:8px;
+  max-height:300px; overflow-y:auto; scrollbar-width:none;
+  box-shadow:0 -14px 36px rgba(0,0,0,0.35), 0 4px 16px rgba(0,0,0,0.15);
+}
+.dropdown-menu::-webkit-scrollbar{ display:none; }
+.dropdown-menu.open{ display:flex; }
+
+.dropdown-item{
+  flex-shrink:0; width:100%; min-height:42px;
+  display:flex; align-items:center; justify-content:flex-start; gap:10px;
+  text-align:left; padding:10px 14px; cursor:pointer;
+  background:transparent;
+  border:none; border-radius:12px;
+  color:var(--black);
+  font-size:13px; font-weight:700; line-height:1.2;
+  transition:background .15s ease;
+}
+.dropdown-item:not(:last-child){
+  border-bottom:1px solid rgba(74, 18, 18, 0.06);
+  border-radius:12px 12px 0 0;
+}
+.dropdown-item:hover:not(:disabled){
+  background:rgba(22, 8, 98, 0.35);
+}
+.dropdown-item:disabled{ opacity:.4; cursor:default; }
+.dropdown-item.walkaway{ color:#C0392B; }
+.dropdown-item.walkaway:hover:not(:disabled){ background:rgba(192,57,43,0.10); }
+
+.chat-thread{ transition:opacity .25s ease; }
+.phone.menu-open .chat-thread{ opacity:.5; }
+.chat-thread{ transition:opacity .25s ease; }
+.phone.menu-open .chat-thread{ opacity:.35; }
+  /* ---- accept / keep negotiating ---- */
+  .deal-actions{ display:none; gap:10px; }
+  .input-area.deal .input-row, .input-area.deal .dropdown-container{ display:none; }
+  .input-area.deal .deal-actions{ display:flex; }
+  .deal-btn{ flex:1; border-radius:999px; padding:15px; font-size:14px; font-weight:800; cursor:pointer; transition:transform .15s ease; }
+  .deal-btn:active{ transform:scale(.97); }
+  .deal-btn.accept{ background:var(--yellow); border:none; color:var(--black); }
+  .deal-btn.decline{ background:transparent; border:1.5px solid #fff; color:#fff; }
+  @media (prefers-reduced-motion: reduce){ *{ transition:none !important; animation:none !important; } }
+</style>
+</head>
+<body>
+  <!-- TOP BAR -->
+  <div class="phone" id="phone">
+    <div class="confirm-overlay" id="confirmOverlay">
+      <div class="confirm-box">
+        <p class="confirm-text" id="confirmText"></p>
+        <div class="confirm-actions">
+          <button class="confirm-btn confirm-cancel" id="confirmCancelBtn">Stay</button>
+          <button class="confirm-btn confirm-leave" id="confirmLeaveBtn">Leave</button>
+        </div>
+      </div>
+    </div>
+    
+    <div class="top-bar">
+      <button class="back-btn" id="backFromNegotiate">
+        <svg viewBox="0 0 24 24" width="15" height="15" fill="none" stroke="currentColor" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round"><path d="M15 6 L9 12 L15 18"/></svg>
+        <span>Back</span>
+      </button>
+      
+      <button class="sound-toggle" id="soundToggle" aria-label="Toggle sound">🔊</button>
+    </div>
+    <div class="neg-header">
+      <div class="header-card">
+        <div class="contact-row">
+          <div class="avatar-hero" id="contactAvatar">🙂</div>
+          <div class="contact-meta">
+            <div class="contact-name" id="contactName"></div>
+            <div class="contact-status" id="contactStatus"></div>
+          </div>
+          <div class="price-hero" id="priceHero">₹0</div>
+        </div>
+        <div class="bars-row">
+          <div class="bar-block">
+            <div class="bar-label"><span>Progress</span><span id="gapLabel">Still far apart</span></div>
+            <div class="bar-track"><div class="bar-fill" id="progressFill" style="width:0%;"></div></div>
+          </div>
+          <div class="bar-block">
+            <div class="bar-label"><span>Trust</span><span id="trustMood">Neutral</span></div>
+            <div class="trust-track"><div class="trust-marker" id="trustMarker" style="left:50%;"></div></div>
+          </div>
+        </div>
+      </div>
+    </div>
+    <div class="chat-thread" id="chatThread"></div>
+    <div class="input-area" id="inputArea">
+      <div class="input-row">
+        <input type="text" id="customInput" placeholder="type your message" autocomplete="off">
+        <button id="sendBtn">send</button>
+      </div>
+      <div class="dropdown-container">
+        <button class="dropdown-toggle" id="dropdownToggle">
+          <svg class="arrow" viewBox="0 0 24 24" width="20" height="20" fill="none" stroke="
+#11172E" stroke-width="2.6" stroke-linecap="round" stroke-linejoin="round"><path d="M6 15 L12 9 L18 15"/></svg>
+          <span>Select your argument</span>
+        </button>
+        <div class="dropdown-menu" id="dropdownMenu"></div>
+      </div>
+      <div class="deal-actions">
+        <button class="deal-btn accept" id="acceptBtn">Accept the deal</button>
+        <button class="deal-btn decline" id="declineBtn">Keep negotiating</button>
+      </div>
+    </div>
+  </div>
+<!-- Shared scenario data: save your full SCENARIOS block as public/scenarios.js -->
+<script src="scenarios.js"></script>
+<script>
+(function(){
+  "use strict";
+  // ============================================================
+  // BASIC HELPERS
+  // ============================================================
+  function storageGet(key, def){ try{ const v=localStorage.getItem('molbhav_'+key); return v!==null?JSON.parse(v):def; }catch(e){ return def; } }
+  function storageSet(key,val){ try{ localStorage.setItem('molbhav_'+key, JSON.stringify(val)); }catch(e){} }
+  function rand(min,max){ return Math.floor(Math.random()*(max-min+1))+min; }
+  function pick(arr){ return arr[Math.floor(Math.random()*arr.length)]; }
+  function clamp(v,min,max){ return Math.min(max,Math.max(min,v)); }
+  function fmt(n){ if(n===null||n===undefined||isNaN(n)) return '—'; return '₹' + Math.round(n).toLocaleString('en-IN'); }
+  function snapToStep(n, rt){ return Math.round(n/rt)*rt; }
+  function withTimeout(promise, ms, fallbackValue){
+    return Promise.race([
+      promise.catch(function(){ return fallbackValue; }),
+      new Promise(function(resolve){ setTimeout(function(){ resolve(fallbackValue); }, ms); })
+    ]);
+  }
+  // ============================================================
+  // DOM REFS
+  // ============================================================
+  const chatThread = document.getElementById('chatThread');
+  const priceHero = document.getElementById('priceHero');
+  const gapLabel = document.getElementById('gapLabel');
+  const progressFill = document.getElementById('progressFill');
+  const trustMarker = document.getElementById('trustMarker');
+  const trustMood = document.getElementById('trustMood');
+  const contactAvatar = document.getElementById('contactAvatar');
+  const contactName = document.getElementById('contactName');
+  const contactStatus = document.getElementById('contactStatus');
+  const dropdownToggle = document.getElementById('dropdownToggle');
+  const dropdownMenu = document.getElementById('dropdownMenu');
+  const customInput = document.getElementById('customInput');
+  const sendBtn = document.getElementById('sendBtn');
+  const inputArea = document.getElementById('inputArea');
+  const acceptBtn = document.getElementById('acceptBtn');
+  const declineBtn = document.getElementById('declineBtn');
+  const soundToggle = document.getElementById('soundToggle');
+  const confirmOverlay = document.getElementById('confirmOverlay');
+const confirmText = document.getElementById('confirmText');
+const confirmCancelBtn = document.getElementById('confirmCancelBtn');
+const confirmLeaveBtn = document.getElementById('confirmLeaveBtn');
+let confirmResolve = null;
+
+function showConfirm(message){
+  confirmText.textContent = message;
+  confirmOverlay.classList.add('open');
+  return new Promise(function(resolve){ confirmResolve = resolve; });
+}
+function hideConfirm(result){
+  confirmOverlay.classList.remove('open');
+  if(confirmResolve){ confirmResolve(result); confirmResolve = null; }
+}
+
+confirmCancelBtn.addEventListener('click', function(){ hideConfirm(false); });
+confirmLeaveBtn.addEventListener('click', function(){ hideConfirm(true); });
+confirmOverlay.addEventListener('click', function(e){ if(e.target===confirmOverlay) hideConfirm(false); });
+  // ============================================================
+  // SANITY CHECK — scenarios.js must be loaded
+  // ============================================================
+  if(typeof SCENARIOS === 'undefined'){
+    chatThread.innerHTML = '<div class="chat-caption system">Could not load scenarios.js — make sure it is in the same folder as negotiate.html</div>';
+    customInput.disabled = true; sendBtn.disabled = true; dropdownToggle.disabled = true;
+    return;
+  }
+  // ============================================================
+  // AUDIO (light)
+  // ============================================================
+  let audioCtx = null;
+  let soundEnabled = true;
+  function playTone(freq, duration, type, vol){
+    if(!soundEnabled) return;
+    type = type || 'sine'; vol = vol===undefined?0.10:vol;
+    try{
+      if(!audioCtx) audioCtx = new (window.AudioContext||window.webkitAudioContext)();
+      const osc = audioCtx.createOscillator();
+      const gain = audioCtx.createGain();
+      osc.type = type; osc.frequency.value = freq;
+      gain.gain.setValueAtTime(vol, audioCtx.currentTime);
+      gain.gain.exponentialRampToValueAtTime(0.001, audioCtx.currentTime+duration);
+      osc.connect(gain); gain.connect(audioCtx.destination);
+      osc.start(audioCtx.currentTime); osc.stop(audioCtx.currentTime+duration);
+    }catch(e){}
+  }
+  function soundSend(){ playTone(400, 0.06, 'sine', 0.04); }
+  function soundTrustUp(){ playTone(660, 0.15); setTimeout(function(){ playTone(880, 0.12, 'sine', 0.08); }, 120); }
+  function soundTrustDown(){ playTone(300, 0.20, 'sawtooth', 0.06); }
+  function soundDeal(){ playTone(523, 0.15); setTimeout(function(){ playTone(659, 0.15); }, 150); setTimeout(function(){ playTone(784, 0.20, 'sine', 0.12); }, 300); }
+  function soundWalkAway(){ playTone(440, 0.25, 'sine', 0.08); setTimeout(function(){ playTone(330, 0.30, 'sine', 0.06); }, 200); }
+  soundToggle.addEventListener('click', function(){
+    soundEnabled = !soundEnabled;
+    soundToggle.textContent = soundEnabled ? '🔊' : '🔇';
+    if(soundEnabled) playTone(600, 0.1);
+  });
+  // ============================================================
+  // GAME CONSTANTS
+  // ============================================================
+  const DIFFICULTIES = {
+    easy:   { label:'Easy',   startingTrust:60, moveMultiplier:1.2, thresholdMultiplier:1.35, urgencyBiasShift:0.15 },
+    medium: { label:'Medium', startingTrust:50, moveMultiplier:1.0, thresholdMultiplier:1.0,  urgencyBiasShift:0 },
+    hard:   { label:'Hard',   startingTrust:35, moveMultiplier:0.7, thresholdMultiplier:0.8,  urgencyBiasShift:-0.2 }
+  };
+  const LIMIT_FRACTIONS = { high:[0.05,0.20], medium:[0.25,0.45], low:[0.50,0.70] };
+  const BASE_DEAL_THRESHOLD_PCT = 0.10;
+  const MOVE_TECHNIQUES = {
+    flaw: 'Anchoring down with an objection',
+    upfront: 'Trading a concession for price',
+    connect: 'Building rapport before asking',
+    firm: 'Anchoring and holding your line',
+    compromise: 'Splitting the difference',
+    probe: 'Discovering hidden information'
+  };
+  const learningMode = storageGet('learningMode', false);
+  // ============================================================
+  // WHICH SCENARIO? (from ?scenario=key in the URL)
+  // ============================================================
+  const params = new URLSearchParams(window.location.search);
+  let scenarioKey = params.get('scenario');
+  if(!scenarioKey || !SCENARIOS[scenarioKey]) scenarioKey = 'rent';
+  // ============================================================
+  // GAME STATE
+  // ============================================================
+  let state = {};
+  function prepareRound(key){
+    const sc = SCENARIOS[key];
+    // Difficulty: URL param > saved by index page > medium
+    let diffKey = params.get('difficulty') || storageGet('difficulty', 'medium');
+    if(!DIFFICULTIES[diffKey]) diffKey = 'medium';
+    // If the briefing page saved the round it showed the player, reuse it so numbers match
+    let saved = null;
+    try{ saved = JSON.parse(sessionStorage.getItem('molbhav_round') || 'null'); }catch(e){}
+    if(saved && saved.scenarioKey === key){
+      if(DIFFICULTIES[saved.difficulty]) diffKey = saved.difficulty;
+    } else {
+      saved = null;
+    }
+    try{ sessionStorage.removeItem('molbhav_round'); }catch(e){}
+    const diff = DIFFICULTIES[diffKey];
+    const rt = sc.roundTo;
+    let ask0, offer0, gap, urgencyRoll, ownerLimit, effThreshold;
+    if(saved){
+      ask0 = saved.ask0; offer0 = saved.offer0; gap = saved.initialGap;
+      urgencyRoll = saved.urgency; ownerLimit = saved.ownerLimit; effThreshold = saved.effThreshold;
+    } else {
+      ask0 = Math.round(rand(sc.askMin, sc.askMax)/rt)*rt;
+      offer0 = Math.round(rand(sc.offerMin, sc.offerMax)/rt)*rt;
+      if(diffKey==='hard'){
+        if(sc.direction===-1) ask0 = Math.min(ask0+rt*2, sc.askMax+rt*3);
+        else ask0 = Math.max(ask0-rt*2, sc.askMin-rt*3);
+      }
+      ask0 = snapToStep(ask0, rt);
+      offer0 = snapToStep(offer0, rt);
+      gap = Math.abs(ask0-offer0);
+      urgencyRoll = Math.random() < (sc.urgencyBias + diff.urgencyBiasShift) ? 'high' : (Math.random()<0.5?'medium':'low');
+      const fr = LIMIT_FRACTIONS[urgencyRoll];
+      const frac = rand(Math.round(fr[0]*100), Math.round(fr[1]*100))/100;
+      ownerLimit = sc.direction===-1 ? (offer0 + gap*frac) : (offer0 - gap*frac);
+      ownerLimit = Math.round(ownerLimit/rt)*rt;
+      effThreshold = Math.max(rt, Math.round((gap*BASE_DEAL_THRESHOLD_PCT*diff.thresholdMultiplier)/rt)*rt);
+    }
+    state = {
+      scenarioKey: key, scenario: sc, difficulty: diffKey,
+      round: 0, ask: ask0, offer: offer0, ask0: ask0, offer0: offer0,
+      initialGap: gap, effThreshold: effThreshold,
+      trust: diff.startingTrust, urgency: urgencyRoll, ownerLimit: ownerLimit,
+      lastMove: null, firmStreak: 0, over: false, outcome: null, dealPrice: null,
+      moveHistory: [], moveCount: {},
+      usedFirm: false, trustHitLow: false, hintedCustom: false,
+      usedLineIdx: {}, busy: false,
+      pendingDeal: false, pendingDealReason: null, pendingPrice: null, probeCount: 0
+    };
+  }
+  function fillTemplate(str){
+    if(!str) return '';
+    const mid = Math.round((state.ask + state.offer) / 2);
+    return str.replace(/\{ask\}/g, fmt(state.ask)).replace(/\{offer\}/g, fmt(state.offer)).replace(/\{mid\}/g, fmt(mid));
+  }
+  // ============================================================
+  // MOOD
+  // ============================================================
+  function moodKey(t){ if(t>=75) return 'warm'; if(t>=50) return 'neutral'; if(t>=30) return 'tense'; return 'annoyed'; }
+  function moodWord(t){ const k=moodKey(t); return k==='warm'?'Warm':k==='neutral'?'Neutral':k==='tense'?'Tense':'Annoyed'; }
+  function moodFace(t){ const k=moodKey(t); return k==='warm'?'😄':k==='neutral'?'🙂':k==='tense'?'😕':'😠'; }
+  function moodHintText(){ return state.scenario.moodHints[moodKey(state.trust)] || ''; }
+  function getPatternHint(){
+    if(state.firmStreak>=2) return "They've held the same firm line more than once without offering anything new — the repetition is starting to grate on you.";
+    if((state.moveCount.flaw||0)>=2) return "They keep finding new flaws instead of offering anything in return — it's starting to feel one-sided to you.";
+    if((state.moveCount.connect||0)>=1 && state.lastMove==='firm') return "They were warm a moment ago and now they're pushing hard — you notice the shift.";
+    return '';
+  }
+  function gapDescriptor(pct){ if(pct>=95) return 'Nearly there'; if(pct>=70) return 'Getting close'; if(pct>=40) return 'Some distance left'; return 'Still far apart'; }
+  function computeMaxRounds(){
+    if(state.trust>=65) return 7;
+    if(state.trust>=40) return 6;
+    return 5;
+  }
+  // ============================================================
+  // AI DIALOGUE — calls your server's /api/chat (Groq proxy)
+  // ============================================================
+  async function generateOwnerLine(ctx){
+    const sys = 'You are "'+ctx.roleLabel+'" in a real-life negotiation in India ('+ctx.scenarioTitle+'). '+
+    ctx.voice+' '+
+    'Reply the way this specific person would actually talk — not a generic negotiator. Vary sentence structure and word choice every single time.Most lines should have no Hindi word at all; never fall back on stock phrases like "final price" or "take it or leave it" out of habit, only if this exact moment truly calls for it. Write the line in English. If it fits this person\'s voice, you may drop in ONE single Hindi/Mumbai word for flavor (like fair enough, chalo, thik hai) — never a Hindi phrase or a full Hindi sentence, and never more than one such word per line. Good: "Arre, fair enough — I can do 150." Bad: "Thik hai bhai, kal tak ho jayega, 150 le lo." '+
+    'One short line only, max 20 words. No stage directions, no quote marks, no markdown, no emoji. '+
+    'Your mood right now is '+ctx.moodWord+' and you are '+ctx.urgencyHint+'. '+
+    (ctx.askFmt ? 'Naturally work this figure into your line once: '+ctx.askFmt+'. ' : 'Do not mention any price or number in this reply. ')+
+    'Example lines in this voice (tone only — don\'t reuse the exact wording): '+ctx.exampleLines.join(' / ')+
+    (ctx.patternHint ? ' '+ctx.patternHint : '');
+    const userMsg = 'The other person just said: "'+ctx.playerText+'". This is round '+ctx.round+' of '+ctx.maxRounds+'. Reply in character now, in one short line.';
+    try{
+      const response = await fetch('/api/chat', {
+        method: 'POST',
+        headers: { 'Content-Type': 'application/json' },
+        body: JSON.stringify({ system: sys, messages: [{ role: 'user', content: userMsg }] })
+      });
+      const data = await response.json();
+      if(!response.ok){
+        console.warn('[Mol Bhav] /api/chat returned', response.status, data);
+        return null;
+      }
+      const text = (data.content||[]).map(function(b){ return b.text||''; }).join('').trim();
+      if(text) return text.replace(/^["']+|["']+$/g,'');
+      console.warn('[Mol Bhav] /api/chat returned an empty reply', data);
+      return null;
+    }catch(e){
+      console.warn('[Mol Bhav] Could not reach /api/chat — is the page served by your Node server (localhost:3000)?', e);
+      return null;
+    }
+  }
+  // ============================================================
+  // RENDER HEADER / CHAT
+  // ============================================================
+  function renderHeader(){
+    const sc = state.scenario;
+    const face = moodFace(state.trust);
+if(contactAvatar.textContent !== face){
+  contactAvatar.textContent = face;
+  contactAvatar.classList.remove('bounce'); void contactAvatar.offsetWidth; contactAvatar.classList.add('bounce');
+}
+    contactName.textContent = sc.roleLabel;
+    contactStatus.textContent = sc.urgencyHints[state.urgency] || '';
+    priceHero.textContent = fmt(state.ask);
+    const gap = Math.abs(state.ask - state.offer);
+    const progress = state.initialGap > 0 ? clamp(1-(gap/state.initialGap),0,1)*100 : 100;
+    gapLabel.textContent = gapDescriptor(progress);
+    progressFill.style.width = progress + '%';
+    trustMarker.style.left = state.trust + '%';
+    trustMood.textContent = moodWord(state.trust);
+  }
+  function scrollChat(){ chatThread.scrollTop = chatThread.scrollHeight; }
+  function addBubble(sender, text){
+    const row = document.createElement('div');
+    row.className = 'msg-row ' + (sender==='you'?'you':'them');
+    if(sender!=='you'){
+  const emo = document.createElement('span');
+  emo.className = 'mood-emoji';
+  emo.textContent = moodFace(state.trust);
+  row.appendChild(emo);
+}
+    const bub = document.createElement('div');
+    bub.className = 'chat-bubble ' + (sender==='you'?'you':'them');
+    bub.textContent = text;
+    row.appendChild(bub);
+    chatThread.appendChild(row);
+    scrollChat();
+    if(sender==='you') soundSend();
+    return row;
+  }
+  function addCaption(text, isSystem){
+    const el = document.createElement('div');
+    el.className = 'chat-caption' + (isSystem ? ' system' : '');
+    el.textContent = text;
+    chatThread.appendChild(el);
+    scrollChat();
+  }
+  function addTypingRow(){
+    const row = document.createElement('div');
+    row.className = 'msg-row them';
+    const emo = document.createElement('span');
+emo.className = 'mood-emoji';
+emo.textContent = moodFace(state.trust);
+row.appendChild(emo);
+    const bub = document.createElement('div');
+    bub.className = 'chat-bubble them';
+    bub.innerHTML = '<span class="typing-dots"><span></span><span></span><span></span></span>';
+    row.appendChild(bub);
+    chatThread.appendChild(row);
+    scrollChat();
+    return row;
+  }
+  // ============================================================
+  // DROPDOWN — built from THIS scenario's moves
+  // ============================================================
+  function buildDropdown(){
+    dropdownMenu.innerHTML = '';
+    const moves = state.scenario.moves;
+    Object.keys(moves).forEach(function(key){
+      const count = state.moveCount[key] || 0;
+      const btn = document.createElement('button');
+      btn.className = 'dropdown-item';
+      btn.setAttribute('data-move', key);
+      let label = (moves[key].icon ? moves[key].icon + ' ' : '') + moves[key].label;
+      if(learningMode && MOVE_TECHNIQUES[key]) label += ' · ' + MOVE_TECHNIQUES[key];
+      if(count===1) label += ' ⚡';
+      if(count>=2){ label += ' (used)'; btn.disabled = true; }
+      btn.textContent = label;
+      dropdownMenu.appendChild(btn);
+    });
+    const probeBtn = document.createElement('button');
+    probeBtn.className = 'dropdown-item';
+    probeBtn.setAttribute('data-move', 'probe');
+    probeBtn.textContent = '❓ Ask about their situation' + (learningMode ? ' · ' + MOVE_TECHNIQUES.probe : '');
+    if((state.probeCount||0) >= 2) probeBtn.disabled = true;
+    dropdownMenu.appendChild(probeBtn);
+    const walkBtn = document.createElement('button');
+    walkBtn.className = 'dropdown-item walkaway';
+    walkBtn.setAttribute('data-move', 'walkaway');
+    walkBtn.textContent = '🚪 Walk away';
+    dropdownMenu.appendChild(walkBtn);
+  }
+  function closeDropdown(){
+  dropdownMenu.classList.remove('open');
+  dropdownToggle.classList.remove('open');
+  document.getElementById('phone').classList.remove('menu-open');
+} 
+  function setBusy(b){
+    state.busy = b;
+    customInput.disabled = b;
+    sendBtn.disabled = b;
+    dropdownToggle.disabled = b;
+    if(b) closeDropdown();
+  }
+  function enableInput(){
+    setBusy(false);
+    inputArea.classList.remove('deal');
+    buildDropdown();
+  }
+  // ============================================================
+  // CORE LOGIC
+  // ============================================================
+  function getMoveEffect(move, priorCount){
+    const diff = DIFFICULTIES[state.difficulty] || DIFFICULTIES.medium;
+    const moveDef = state.scenario.moves[move];
+    let multiplier = priorCount===0 ? 1 : (priorCount===1 ? 0.45 : 0.15);
+    multiplier *= diff.moveMultiplier;
+    let drop = Math.round((moveDef.dropBase + rand(-moveDef.dropVar/2, moveDef.dropVar/2)) * multiplier);
+    let trustDelta = Math.round((moveDef.trustBase + rand(-moveDef.trustVar/2, moveDef.trustVar/2)) * multiplier);
+    if(state.urgency==='high' && (move==='upfront'||move==='firm')){ drop=Math.round(drop*1.3); trustDelta=Math.round(trustDelta*1.2); }
+    if(state.trust>70 && move==='connect'){ trustDelta = Math.round(trustDelta*1.5); }
+    if(state.difficulty==='hard' && trustDelta<0) trustDelta = Math.round(trustDelta*1.3);
+    return { drop:drop, trustDelta:trustDelta };
+  }
+  function pickUniquePlayerLine(move){
+    const moveDef = state.scenario.moves[move];
+    if(!state.usedLineIdx[move]) state.usedLineIdx[move] = new Set();
+    const used = state.usedLineIdx[move];
+    const lines = moveDef.playerLines;
+    let available = lines.map(function(_,i){return i;}).filter(function(i){ return !used.has(i); });
+    if(!available.length){ used.clear(); available = lines.map(function(_,i){return i;}); }
+    const idx = available[Math.floor(Math.random()*available.length)];
+    used.add(idx);
+    return fillTemplate(lines[idx]);
+  }
+  function reactToTrust(delta){
+    if(delta>0) soundTrustUp(); else if(delta<0) soundTrustDown();
+  }
+  async function applyMove(move, playerText){
+    state.round++;
+    const moveDef = state.scenario.moves[move];
+    const priorCount = state.moveCount[move] || 0;
+    state.moveCount[move] = priorCount+1;
+    if(move==='firm') state.usedFirm = true;
+    state.firmStreak = (move==='firm') ? (state.lastMove==='firm' ? state.firmStreak+1 : 1) : 0;
+    const connectedEarlier = state.moveHistory.some(function(h){ return h.move==='connect'; });
+    const insultedThenCaving = (move==='compromise' && state.lastMove==='flaw');
+    let comboBonus = false, comboPenalty = false;
+    let trustDelta = 0, fallbackLine = '', examplePool = [];
+    if(move==='compromise'){
+      const proposedMid = Math.round((state.ask+state.offer)/2);
+      let acceptChance = clamp((state.trust-15)/70, 0.05, 0.85);
+      if(insultedThenCaving){ acceptChance = clamp(acceptChance-0.15, 0.05, 0.85); comboPenalty = true; }
+      const accepted = Math.random() < acceptChance;
+      const distance = Math.abs(state.ask - proposedMid);
+      if(accepted){
+        state.ask = snapToStep(proposedMid, state.scenario.roundTo);
+        trustDelta = rand(moveDef.trustAccept[0], moveDef.trustAccept[1]);
+        if(insultedThenCaving) trustDelta -= 4;
+        fallbackLine = fillTemplate(pick(moveDef.acceptLines));
+        examplePool = moveDef.acceptLines;
+      } else {
+        const partialMove = Math.round(distance * (rand(25,45)/100));
+        if(state.scenario.direction===1) state.ask = Math.min(state.ask+partialMove, state.ownerLimit+20, state.offer);
+        else state.ask = Math.max(state.ask-partialMove, state.ownerLimit-20);
+        state.ask = snapToStep(state.ask, state.scenario.roundTo);
+        trustDelta = rand(moveDef.trustPartial[0], moveDef.trustPartial[1]);
+        if(insultedThenCaving) trustDelta -= 4;
+        fallbackLine = fillTemplate(pick(moveDef.partialLines));
+        examplePool = moveDef.partialLines;
+      }
+    } else {
+      const eff = getMoveEffect(move, priorCount);
+      trustDelta = eff.trustDelta;
+      let drop = eff.drop;
+      if(move==='firm' && state.firmStreak>=2) trustDelta -= 5;
+      if(move==='firm' && connectedEarlier){ trustDelta += 6; drop = Math.round(drop*1.15); comboBonus = true; }
+      if(state.scenario.direction===1) state.ask = Math.min(state.ask+drop, state.ownerLimit+20, state.offer);
+      else state.ask = Math.max(state.ask-drop, state.ownerLimit-20);
+      state.ask = snapToStep(state.ask, state.scenario.roundTo);
+      fallbackLine = fillTemplate(pick(moveDef.ownerLines));
+      examplePool = moveDef.ownerLines;
+    }
+    state.trust = clamp(state.trust+trustDelta, 0, 100);
+    state.lastMove = move;
+    if(state.trust<30) state.trustHitLow = true;
+    const typingRow = addTypingRow();
+    const startTime = Date.now();
+    const aiLine = await withTimeout(generateOwnerLine({
+      scenarioTitle: state.scenario.title, roleLabel: state.scenario.roleLabel, voice: state.scenario.voice,
+      moodWord: moodWord(state.trust), urgencyHint: state.scenario.urgencyHints[state.urgency],
+      round: state.round, maxRounds: computeMaxRounds(), askFmt: fmt(state.ask), playerText: playerText,
+      patternHint: getPatternHint(),
+      exampleLines: examplePool.slice().sort(function(){ return Math.random()-0.5; }).slice(0,2).map(fillTemplate)
+    }), 6000, null);
+    const elapsed = Date.now()-startTime;
+    setTimeout(function(){
+      typingRow.remove();
+      addBubble('them', aiLine || fallbackLine);
+      state.moveHistory.push({ move:move, label:moveDef.label, trustDelta:trustDelta, resultingAsk:state.ask, comboBonus:comboBonus, comboPenalty:comboPenalty });
+      reactToTrust(trustDelta);
+      checkGameOver();
+      renderHeader();
+      if(state.over) handleGameOver();
+      else if(state.pendingDeal) showDealPrompt();
+      else {
+        if(comboBonus) addCaption('Building trust first paid off.');
+        if(comboPenalty) addCaption('That combo felt inconsistent to them.');
+        addCaption(moodHintText());
+        enableInput();
+      }
+    }, Math.max(0,500-elapsed));
+  }
+  function handleMove(move){
+    if(state.over || state.busy) return;
+    closeDropdown();
+    if(move==='walkaway'){ walkAway(); return; }
+    if(move==='probe'){ handleProbe(); return; }
+    setBusy(true);
+    const playerText = pickUniquePlayerLine(move);
+    addBubble('you', playerText);
+    setTimeout(function(){ applyMove(move, playerText); }, 350);
+  }
+  async function handleNeutralMove(playerText){
+    state.round++;
+    const sc = state.scenario;
+    const trustDelta = rand(0,1); // small talk: tiny warmth only, price doesn't move
+    state.trust = clamp(state.trust+trustDelta, 0, 100);
+    if(state.trust<30) state.trustHitLow = true;
+    const fallbackLine = fillTemplate("Hmm, I hear you. Let's say {ask} and go from there.");
+    const typingRow = addTypingRow();
+    const startTime = Date.now();
+    const aiLine = await withTimeout(generateOwnerLine({
+      scenarioTitle: sc.title, roleLabel: sc.roleLabel, voice: sc.voice, moodWord: moodWord(state.trust),
+      urgencyHint: sc.urgencyHints[state.urgency], round: state.round, maxRounds: computeMaxRounds(), askFmt: fmt(state.ask),
+      playerText: playerText, patternHint: getPatternHint(), exampleLines: [fallbackLine]
+    }), 6000, null);
+    const elapsed = Date.now()-startTime;
+    setTimeout(function(){
+      typingRow.remove();
+      addBubble('them', aiLine || fallbackLine);
+      state.moveHistory.push({ move:'neutral', label:'Your own words', trustDelta:trustDelta, resultingAsk:state.ask });
+      if(!state.hintedCustom){ addCaption('Tip: mention a flaw, upfront cash, or your final number for a bigger effect.'); state.hintedCustom = true; }
+      reactToTrust(trustDelta);
+      checkGameOver();
+      renderHeader();
+      if(state.over) handleGameOver();
+      else if(state.pendingDeal) showDealPrompt();
+      else { addCaption(moodHintText()); enableInput(); }
+    }, Math.max(0,500-elapsed));
+  }
+  async function handleProbe(){
+    if(state.over || state.pendingDeal) return;
+    setBusy(true);
+    state.probeCount = (state.probeCount||0)+1;
+    const questions = [
+      "Can I ask — what's the story here? Any reason you're doing this now?",
+      "Just curious, is there a reason you'd want to close this quickly?",
+      "What made you land on that number, if you don't mind me asking?"
+    ];
+    const q = pick(questions);
+    addBubble('you', q);
+    state.round++;
+    const sc = state.scenario;
+    const trustDelta = rand(-1,3);
+    state.trust = clamp(state.trust+trustDelta, 0, 100);
+    if(state.trust<30) state.trustHitLow = true;
+    const fallbackLine = fillTemplate("Nothing dramatic, just want this sorted fairly, that's all.");
+    const typingRow = addTypingRow();
+    const startTime = Date.now();
+    const probeSys = 'The other person just asked you directly about your situation or motivation. Reveal ONE small, true-feeling detail about your urgency or reason for this deal — enough to give them a genuine read on you — but NEVER mention any number, price, or figure in this reply. Stay fully in character.';
+    const aiLine = await withTimeout(generateOwnerLine({
+      scenarioTitle: sc.title, roleLabel: sc.roleLabel, voice: sc.voice+' '+probeSys, moodWord: moodWord(state.trust),
+      urgencyHint: sc.urgencyHints[state.urgency], round: state.round, maxRounds: computeMaxRounds(), askFmt: '',
+      playerText: q, patternHint: getPatternHint(), exampleLines: [fallbackLine]
+    }), 6000, null);
+    const elapsed = Date.now()-startTime;
+    setTimeout(function(){
+      typingRow.remove();
+      const line = (aiLine || fallbackLine).replace(/₹[\d,]+/g, '').trim();
+      addBubble('them', line);
+      state.moveHistory.push({ move:'probe', label:'Asked about their situation', trustDelta:trustDelta, resultingAsk:state.ask });
+      reactToTrust(trustDelta);
+      checkGameOver();
+      renderHeader();
+      if(state.over) handleGameOver();
+      else if(state.pendingDeal) showDealPrompt();
+      else { addCaption(moodHintText()); enableInput(); }
+    }, Math.max(0,500-elapsed));
+  }
+  function handleCustomInput(){
+    if(state.busy || state.over || state.pendingDeal) return;
+    const text = customInput.value.trim();
+    if(!text) return;
+    customInput.value = '';
+    setBusy(true);
+    const kw = text.toLowerCase();
+    let move = null;
+    if(/paint|repair|broken|clean|quality|meter|draft|leak|scope|jd|responsibilities|weave|tires|clutch|wear/.test(kw)) move='flaw';
+    else if(/upfront|cash|early|pay now|exact|join|start|notice|bulk|today/.test(kw)) move='upfront';
+    else if(/family|quiet|park|neighbour|home|regular|steady|excited|admire|passion|craft|enthusiast|care|student|budget|afford|scholarship|tight on money/.test(kw)) move='connect';
+    else if(/final|non-?negotiable|firm|won't move|not a rupee|market|skills/.test(kw)) move='firm';
+    else if(/split the difference|meet.{0,15}(middle|halfway)|compromise|thik hai/.test(kw)) move='compromise';
+    const usable = move && state.scenario.moves[move] && (state.moveCount[move]||0) < 2;
+    addBubble('you', text);
+    setTimeout(function(){
+      if(usable) applyMove(move, text);
+      else handleNeutralMove(text);
+    }, 350);
+  }
+  function walkAway(){
+  if(state.over) return;
+  setBusy(true);
+  soundWalkAway();
+  state.over = true;
+  state.outcome = 'walked-bad';
+  state.dealPrice = null;
+  finish();
+}
+  function checkGameOver(){
+  if(state.trust<=0){ state.over=true; state.outcome='lost'; state.dealPrice=null; return; }
+  const gap = Math.abs(state.ask-state.offer);
+  const maxR = computeMaxRounds();
+  
+  // Check time-out FIRST. If you are out of rounds, it's strictly a timeout deal.
+  if(state.round>=maxR){
+    state.pendingDeal = true; state.pendingDealReason = 'timeout';
+    state.pendingPrice = state.ask;
+    return;
+  }
+  
+  // Check gap SECOND. Only if you still have rounds left.
+  if(gap <= state.effThreshold){
+    state.pendingDeal = true; state.pendingDealReason = 'gap';
+    state.pendingPrice = Math.round(((state.ask+state.offer)/2)/state.scenario.roundTo)*state.scenario.roundTo;
+    return;
+  }
+}
+
+function showDealPrompt(){
+  setBusy(true);
+  const priceText = fmt(state.pendingPrice);
+  const msg = state.pendingDealReason === 'timeout'
+    ? "You're out of rounds. Final number on the table: " + priceText + ". Accept it?"
+    : "You're close enough to settle at " + priceText + ". Accept the deal?";
+  addCaption(msg, true);
+  declineBtn.textContent = state.pendingDealReason === 'timeout' ? 'No deal' : 'Keep negotiating';
+  inputArea.classList.add('deal');
+}
+  acceptBtn.addEventListener('click', function(){
+    state.over = true;
+    state.outcome = state.pendingDealReason === 'timeout' ? 'timeout' : 'deal';
+    state.dealPrice = state.pendingPrice;
+    state.pendingDeal = false;
+    inputArea.classList.remove('deal');
+    handleGameOver();
+  });
+  declineBtn.addEventListener('click', function(){
+  state.pendingDeal = false;
+  if(state.pendingDealReason === 'timeout'){
+    state.over = true; state.outcome = 'walked-bad'; state.dealPrice = null;
+    inputArea.classList.remove('deal');
+    addCaption(state.scenario.roleLabel + " said there's nothing more to discuss.", true);
+    setTimeout(finish, 1200);
+  } else {
+    addCaption('You decide to keep pushing for a better number...', true);
+    enableInput();
+  }
+});
+  function handleGameOver(){
+    setBusy(true);
+    let systemText = '';
+    if(state.outcome==='deal'){ systemText = 'Deal reached at ' + fmt(state.dealPrice); soundDeal(); }
+    else if(state.outcome==='timeout'){ systemText = 'Final offer accepted at ' + fmt(state.dealPrice); soundDeal(); }
+    else if(state.outcome==='lost'){ systemText = state.scenario.roleLabel + ' walked off'; }
+    setTimeout(function(){
+      if(systemText) addCaption(systemText, true);
+      setTimeout(finish, 1400);
+    }, 400);
+  }
+  // ============================================================
+  // RESULT — record progress, hand off to end.html
+  // ============================================================
+  function computeResult(){
+    const role = state.scenario.roleLabel;
+    if(state.outcome==='lost'){
+      return { win:false, title:'Talks broke down', message: role + ' walked off — trust ran out. Try again with a gentler mix of moves.' };
+    }
+    if(state.outcome==='walked-bad'){
+      return { win:false, title:'No deal', message: role + ' was happy to let you go. Try again with a stronger position.' };
+    }
+    const margin = Math.max(state.effThreshold*1.5, state.scenario.roundTo);
+    let win;
+    if(state.scenario.direction === 1){
+      // Price should move UP for the player — meeting or beating their real ceiling is a win.
+      win = state.dealPrice!==null && (state.dealPrice >= state.ownerLimit - margin);
+    } else {
+      // Price should move DOWN for the player — meeting or beating their real floor is a win.
+      win = state.dealPrice!==null && (state.dealPrice <= state.ownerLimit + margin);
+    }
+    if(win){
+      return { win:true, title:'You won the negotiation!', message:'You landed at '+fmt(state.dealPrice)+' — right near '+role+"'s real limit." };
+    }
+    return { win:false, title:'Deal made — but try again', message:'You settled at '+fmt(state.dealPrice)+', well short of '+role+"'s real limit. Push harder next time." };
+  }
+  function getMeta(){ return storageGet('meta', { deals:0, streak:0, maxStreak:0, scenarios:{}, bestPrices:{}, mediumWins:0 }); }
+  function recordDeal(key, success, difficulty){
+    const meta = getMeta();
+    if(success){
+      meta.deals = (meta.deals||0)+1;
+      meta.streak = (meta.streak||0)+1;
+      if(meta.streak > (meta.maxStreak||0)) meta.maxStreak = meta.streak;
+      if(!meta.scenarios) meta.scenarios = {};
+      meta.scenarios[key] = (meta.scenarios[key]||0)+1;
+      if(difficulty === 'medium'){
+  if(!meta.mediumWinsByScenario) meta.mediumWinsByScenario = {};
+  meta.mediumWinsByScenario[key] = (meta.mediumWinsByScenario[key]||0)+1;
+}
+    } else {
+      meta.streak = 0;
+    }
+    storageSet('meta', meta);
+  }
+  function recordBestPrice(key, price, direction){
+    const meta = getMeta();
+    if(!meta.bestPrices) meta.bestPrices = {};
+    const current = meta.bestPrices[key];
+    const better = current===undefined || (direction===1 ? price>current : price<current);
+    if(better){ meta.bestPrices[key] = price; storageSet('meta', meta); }
+  }
+  let finished = false;
+  function finish(){
+    if(finished) return;
+    finished = true;
+    const result = computeResult();
+    recordDeal(state.scenarioKey, result.win, state.difficulty);
+    if(state.dealPrice!==null) recordBestPrice(state.scenarioKey, state.dealPrice, state.scenario.direction);
+    // Everything end.html needs to build its result screen:
+    storageSet('lastResult', {
+      scenarioKey: state.scenarioKey,
+      scenarioTitle: state.scenario.title,
+      roleLabel: state.scenario.roleLabel,
+      limitLabel: state.scenario.limitLabel,
+      direction: state.scenario.direction,
+      difficulty: state.difficulty,
+      outcome: state.outcome,
+      win: result.win,
+      resultTitle: result.title,
+      resultMessage: result.message,
+      dealPrice: state.dealPrice,
+      startingAsk: state.ask0,
+      ownerLimit: state.ownerLimit,
+      rounds: state.round,
+      trust: state.trust,
+      moveHistory: state.moveHistory
+    });
+    window.location.href = 'end.html?scenario=' + state.scenarioKey;
+  }
+  // ============================================================
+  // EVENTS
+  // ============================================================
+  document.getElementById('backFromNegotiate').addEventListener('click', async function(){
+  if(state.round>0 && !state.over){
+    const leave = await showConfirm('Leave this negotiation? Your progress will be lost.');
+    if(!leave) return;
+  }
+  window.location.href = 'briefing.html?scenario=' + scenarioKey;
+});
+  dropdownToggle.addEventListener('click', function(){
+  if(state.busy) return;
+  dropdownMenu.classList.toggle('open');
+  dropdownToggle.classList.toggle('open');
+  document.getElementById('phone').classList.toggle('menu-open',
+    dropdownMenu.classList.contains('open'));
+});
+  dropdownMenu.addEventListener('click', function(e){
+    const item = e.target.closest('.dropdown-item');
+    if(!item || item.disabled) return;
+    handleMove(item.getAttribute('data-move'));
+  });
+  document.addEventListener('click', function(e){
+    if(!e.target.closest('.dropdown-container')) closeDropdown();
+  });
+  sendBtn.addEventListener('click', handleCustomInput);
+  customInput.addEventListener('keydown', function(e){ if(e.key==='Enter') handleCustomInput(); });
+  // ============================================================
+  // START
+  // ============================================================
+  function begin(){
+    prepareRound(scenarioKey);
+    chatThread.innerHTML = '';
+    setBusy(true);
+    renderHeader();
+    setTimeout(function(){
+      addBubble('them', fillTemplate(state.scenario.openingOwnerTemplate));
+      setTimeout(function(){
+        addBubble('you', fillTemplate(state.scenario.openingPlayerTemplate));
+        addCaption(moodHintText());
+        enableInput();
+      }, 700);
+    }, 400);
+  }
+  begin();
+})();
+</script>
+</body>
+</html>

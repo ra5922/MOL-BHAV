@@ -1,0 +1,382 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8" />
+<meta name="viewport" content="width=device-width, initial-scale=1.0, viewport-fit=cover" />
+<title>Mol Bhav — Result</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Rozha+One&family=Manrope:wght@400;500;600;700;800&display=swap" rel="stylesheet">
+<style>
+  :root{
+    --yellow:#F8D299;
+    --blue:#11172E;
+    --purple:#3B3561;
+    --gray:#D9D9D9;
+    --bubble-gray:#F5F5F5;
+    --black:#111111;
+    --white:#FFFFFF;
+    --tan:#E1D2B2;
+  }
+  *{ box-sizing:border-box; margin:0; padding:0; }
+  button{ font-family:inherit; -webkit-tap-highlight-color:transparent; }
+  html,body{ height:100%; }
+
+  /* ---- page + phone shell (same as negotiate.html) ---- */
+  body{
+    min-height:100vh; display:flex; align-items:center; justify-content:center;
+    background:
+      radial-gradient(circle at 20% 15%, rgba(217,164,65,0.10), transparent 40%),
+      radial-gradient(circle at 85% 80%, rgba(166,71,46,0.12), transparent 45%),
+      linear-gradient(160deg, #1E2438, #141828);
+    font-family:'Manrope', sans-serif; color:var(--white); padding:24px 12px;
+  }
+  
+  .phone{
+  width:min(420px,100%); height:92vh; min-height:680px; max-height:920px;
+  border-radius:26px; overflow:hidden; position:relative;
+  display:flex; flex-direction:column;
+  background:linear-gradient(180deg, var(--blue) 0%, var(--blue) 68%, var(--purple) 100%);
+  box-shadow:0 30px 60px rgba(0,0,0,0.45), 0 2px 0 rgba(255,255,255,0.12) inset;
+}
+  @media (min-width:1100px){ .phone{ width:min(440px,100%); } }
+  @media (max-width:480px){
+    body{ padding:0; }
+    .phone{ height:100vh; height:100dvh; min-height:0; max-height:none; border-radius:0; box-shadow:none; }
+  }
+  .phone.shake{ animation:shake .5s ease; }
+  @keyframes shake{ 0%,100%{transform:translateX(0);} 20%{transform:translateX(-8px);} 40%{transform:translateX(7px);} 60%{transform:translateX(-5px);} 80%{transform:translateX(4px);} }
+  @keyframes fadeSlideUp{
+  from{ opacity:0; transform:translateY(16px); }
+  to{ opacity:1; transform:translateY(0); }
+}
+  /* ---- top bar ---- */
+  .top-bar{ display:flex; align-items:center; justify-content:space-between; padding:16px 20px 8px; flex-shrink:0; }
+  .back-btn{ background:none; border:none; font-family:'Manrope', sans-serif; font-weight:700; font-size:13px; color:#fff; cursor:pointer; padding:4px 6px; display:inline-flex; align-items:center; gap:4px; }
+  .back-btn:hover{ opacity:.8; }
+  .top-kicker{ font-size:11px; font-weight:800; letter-spacing:1.6px; text-transform:uppercase; color:rgba(255,255,255,0.55); }
+
+  /* ---- scroll body ---- */
+  .end-body{ flex:1; min-height:0; overflow-y:auto; padding:6px 20px 20px; scrollbar-width:none; }
+  .end-body::-webkit-scrollbar{ display:none; }
+
+  /* ---- result banner ---- */
+  .result-banner{ text-align:center; margin:18px 0 20px; animation:fadeSlideUp .5s ease both; }
+  .result-icon{ font-size:48px; line-height:1; margin-bottom:8px; animation:gradePop .4s ease; }
+  @keyframes gradePop{ 0%{transform:scale(0);} 70%{transform:scale(1.15);} 100%{transform:scale(1);} }
+  .result-title{ font-family:'Rozha One', serif; font-size:24px; line-height:1.3; color:#fff; margin:0 0 8px; }
+  .result-title.lose{ color:var(--yellow); }
+  .result-message{ font-size:13.5px; line-height:1.55; color:rgba(255,255,255,0.75); max-width:320px; margin:0 auto; }
+
+  /* ---- stat cards ---- */
+  .stats-row{ display:flex; gap:10px; margin-bottom:18px; }
+  .stat-card{ flex:1; background:var(--bubble-gray); border-radius:16px; padding:14px 12px; text-align:center; animation:fadeSlideUp .5s ease both; animation-delay:.15s; }
+.stat-card:nth-child(2){ animation-delay:.25s; }
+  .stat-label{ font-size:9.5px; font-weight:800; letter-spacing:0.8px; text-transform:uppercase; color:rgba(17,17,17,0.55); margin-bottom:6px; }
+  .stat-value{ font-family:'Rozha One', serif; font-size:20px; color:var(--blue); line-height:1; }
+  .confetti-piece{
+  position:absolute;
+  width:9px;
+  height:16px;
+  border-radius:4px;
+  opacity:0;
+  transform:translateY(calc(var(--drop) * -1)) rotate(0deg);
+  animation-name:confettiDrop;
+  animation-timing-function:ease-out;
+  animation-fill-mode:forwards;
+  pointer-events:none;
+  z-index:200;
+}
+@keyframes confettiDrop{
+  0%{ opacity:0; transform:translateY(calc(var(--drop) * -1)) rotate(0deg); }
+  15%{ opacity:1; }
+  75%{ opacity:1; transform:translateY(0) rotate(var(--rot)); }
+  100%{ opacity:0; transform:translateY(0) rotate(var(--rot)); }
+}
+  /* ---- debrief ---- */
+  .section-title{ font-size:11px; font-weight:800; letter-spacing:0.8px; text-transform:uppercase; color:rgba(255,255,255,0.5); margin:0 0 10px; }
+  .debrief-card{ background:var(--bubble-gray); border-radius:16px; padding:6px 14px; margin-bottom:18px; }
+  .debrief-row{ display:flex; justify-content:space-between; align-items:flex-start; gap:10px; padding:11px 0; border-bottom:1px solid rgba(17,17,17,0.08); }
+  .debrief-row:last-child{ border-bottom:none; }
+  .debrief-move{ font-size:12.5px; font-weight:700; color:var(--black); line-height:1.4; }
+  .debrief-tag{ display:block; font-size:10.5px; font-weight:700; color:#5B8C4A; margin-top:2px; }
+  .debrief-tag.penalty{ color:#B04A3A; }
+  .debrief-detail{ font-size:11.5px; font-weight:700; color:rgba(17,17,17,0.55); text-align:right; flex-shrink:0; white-space:nowrap; }
+
+  /* ---- brag card ---- */
+  .brag-card{ background:var(--yellow); border-radius:16px; padding:16px 16px 14px; text-align:center; margin-bottom:20px; }
+  .brag-text{ font-size:13px; font-weight:700; color:var(--black); line-height:1.45; margin:0 0 10px; }
+  .brag-copy{ border:1.5px solid rgba(17,17,17,0.35); background:transparent; color:var(--black); border-radius:999px; padding:8px 16px; font-size:12px; font-weight:800; cursor:pointer; }
+  .brag-copy:hover{ background:rgba(17,17,17,0.06); }
+  .brag-copy:active{ transform:scale(0.97); }
+  .win-stat-label{
+  font-size:9px; font-weight:800; letter-spacing:0.8px; text-transform:uppercase;
+  color:rgba(255,255,255,0.55); margin-bottom:6px;
+  white-space:nowrap; overflow:hidden; text-overflow:ellipsis;
+}
+  /* ---- actions ---- */
+  .end-actions{ display:flex; gap:10px; padding-bottom:4px; animation:fadeSlideUp .5s ease both; animation-delay:.35s; }
+.win-hero .end-actions{ animation-delay:.95s; }
+  .end-btn{ flex:1; border-radius:999px; padding:14px; font-size:13.5px; font-weight:800; cursor:pointer; transition:transform .15s ease; }
+  .end-btn:active{ transform:scale(0.97); }
+  .end-btn.secondary{ background:transparent; border:1.5px solid #fff; color:#fff; }
+  .end-btn.secondary:hover{ background:rgba(255,255,255,0.08); }
+  .end-btn.primary{ background:var(--yellow); border:none; color:var(--black); }
+  .end-btn.primary:hover{ background:#f3c67e; }
+
+  /* ---- confetti ---- */
+  .confetti-piece{ position:absolute; top:-10px; width:8px; height:14px; opacity:0.9; pointer-events:none; z-index:60; animation:confettiFall linear forwards; }
+  @keyframes confettiFall{ to{ transform:translateY(680px) rotate(540deg); opacity:0; } }
+  .end-body.centered{
+  display:flex;
+  flex-direction:column;
+  align-items:center;
+  justify-content:center;
+}
+  /* ---- empty state ---- */
+  .empty-state{ flex:1; display:flex; flex-direction:column; align-items:center; justify-content:center; text-align:center; padding:40px 24px; gap:14px; }
+  .empty-state p{ font-size:13.5px; color:rgba(255,255,255,0.7); line-height:1.5; }
+
+  @media (prefers-reduced-motion: reduce){ *{ transition:none !important; animation:none !important; } }
+  /* ---- win celebration screen ---- */
+  .phone.win-bg{
+  background:
+    url('IMAGES/con.png') center / cover no-repeat,
+    linear-gradient(180deg, var(--blue) 0%, var(--blue) 68%, var(--purple) 100%);
+}
+
+.win-hero{
+  flex:1; display:flex; flex-direction:column; align-items:center; justify-content:center;
+  text-align:center; padding:28px 28px 20px; position:relative; z-index:2;
+}
+.win-badge{
+  width:170px; height:170px; margin-bottom:30px;
+  clip-path:polygon(50% 0%, 100% 25%, 100% 75%, 50% 100%, 0% 75%, 0% 25%);
+  background:linear-gradient(145deg, #8B7FE8, #6C5CE7);
+  box-shadow:0 0 55px 12px rgba(139,127,232,0.55);
+  display:flex; align-items:center; justify-content:center;
+  animation:badgePop .5s cubic-bezier(.34,1.56,.64,1);
+}
+.win-badge-inner{
+  width:140px; height:140px;
+  clip-path:polygon(50% 0%, 100% 25%, 100% 75%, 50% 100%, 0% 75%, 0% 25%);
+  background:#fff; display:flex; align-items:center; justify-content:center;
+}
+.win-badge-inner img{ width:132px; height:132px; object-fit:contain; }
+@keyframes badgePop{
+  0%{ transform:scale(0.5); opacity:0; }
+  70%{ transform:scale(1.08); }
+  100%{ transform:scale(1); opacity:1; }
+}
+.win-title{
+  font-family:'Manrope', sans-serif; font-weight:800; font-size:26px;
+  color:#fff; line-height:1.25; margin:0;
+  animation:fadeSlideUp .5s ease both; animation-delay:.45s;
+}
+.win-subtitle{
+  font-family:'Manrope', sans-serif; font-weight:600; font-size:13.5px;
+  color:rgba(255,255,255,0.65); line-height:1.5; margin:10px 0 0;
+  animation:fadeSlideUp .5s ease both; animation-delay:.6s;
+}
+.confetti-piece{
+  position:absolute; width:8px; height:16px; border-radius:4px;
+  opacity:0; pointer-events:none; z-index:5;
+  animation:confettiDrop .8s ease-out forwards;
+}
+@keyframes confettiDrop{
+  0%{ opacity:0; transform:translateY(calc(-1 * var(--drop, 40px))) rotate(0deg); }
+  40%{ opacity:1; }
+  100%{ opacity:1; transform:translateY(0) rotate(var(--rot, 0deg)); }
+}
+.win-stats-row{
+  display:flex; gap:12px; margin-top:22px; width:100%; max-width:280px;
+}
+.win-stat{
+  flex:1; background:rgba(255,255,255,0.10); border:1px solid rgba(255,255,255,0.16);
+  border-radius:14px; padding:12px 10px; text-align:center;
+  animation:fadeSlideUp .5s ease both; animation-delay:.75s;
+}
+.win-stat:nth-child(2){ animation-delay:.85s; }
+.win-stat-label{
+  font-size:9px; font-weight:800; letter-spacing:0.8px; text-transform:uppercase;
+  color:rgba(255,255,255,0.55); margin-bottom:6px;
+}
+.win-stat-value{
+  font-family:'Rozha One', serif; font-size:18px; color:#fff; line-height:1;
+}
+</style>
+</head>
+<body>
+  <div class="phone" id="phone">
+
+    <div class="top-bar">
+      <button class="back-btn" id="homeBtn">
+        <svg viewBox="0 0 24 24" width="15" height="15" fill="none" stroke="currentColor" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round"><path d="M15 6 L9 12 L15 18"/></svg>
+        <span>Back</span>
+      </button>
+      <span style="width:44px;"></span>
+    </div>
+
+    <div class="end-body" id="endBody"></div>
+
+  </div>
+
+<script>
+(function(){
+  "use strict";
+
+  function storageGet(key, def){ try{ const v=localStorage.getItem('molbhav_'+key); return v!==null?JSON.parse(v):def; }catch(e){ return def; } }
+  function fmt(n){ if(n===null||n===undefined||isNaN(n)) return '—'; return '₹' + Math.round(n).toLocaleString('en-IN'); }
+
+  const phone = document.getElementById('phone');
+  const endBody = document.getElementById('endBody');
+  const params = new URLSearchParams(window.location.search);
+  const result = storageGet('lastResult', null);
+
+  document.getElementById('homeBtn').addEventListener('click', function(){
+    window.location.href = 'index.html';
+  });
+
+  // ============================================================
+  // NO RESULT TO SHOW (page opened directly / storage cleared)
+  // ============================================================
+  if(!result){
+    endBody.innerHTML =
+      '<div class="empty-state">' +
+        '<p>No result to show yet — play a negotiation first and you\'ll see how it went here.</p>' +
+      '</div>';
+    return;
+  }
+
+  // ============================================================
+  // CONFETTI / SHAKE
+  // ============================================================
+  function fireConfetti(){
+    const colors = ['#F8D299','#E85D5D','#5BC97F','#4FB8D6','#F2C94C','#F2994A','#EB5B9A','#7CD9C9'];
+    const cols = 5;
+    const rows = 4; // 5 x 4 = 20 pieces total, spread evenly
+    for(let r=0; r<rows; r++){
+      for(let c=0; c<cols; c++){
+        const el = document.createElement('div');
+        el.className = 'confetti-piece';
+        const leftBase = (c / cols) * 100;
+        const leftJitter = Math.random() * (100 / cols) * 0.7;
+        const topBase = (r / rows) * 100;
+        const topJitter = Math.random() * (100 / rows) * 0.7;
+        el.style.left = (leftBase + leftJitter) + '%';
+        el.style.top = (topBase + topJitter) + '%';
+        el.style.setProperty('--drop', (20 + Math.random()*50) + 'px');
+        el.style.setProperty('--rot', Math.floor(Math.random()*360) + 'deg');
+        el.style.background = colors[Math.floor(Math.random()*colors.length)];
+        el.style.animationDuration = (1.4+Math.random()*0.8)+'s';
+        el.style.animationDelay = (Math.random()*0.5)+'s';
+        phone.appendChild(el);
+        (function(node){ setTimeout(function(){ node.remove(); }, 3200); })(el);
+      }
+    }
+}
+  function shakePhone(){
+    phone.classList.add('shake');
+    setTimeout(function(){ phone.classList.remove('shake'); }, 500);
+  }
+
+  // ============================================================
+  // BUILD THE SCREEN
+  // ============================================================
+  const win = !!result.win;
+  const noDeal = (result.dealPrice === null || result.dealPrice === undefined);
+  let html = '';
+
+  if(win){
+    endBody.classList.add('centered');
+    html += '<div class="win-hero">';
+    html +=   '<div class="win-badge"><div class="win-badge-inner"><img src="IMAGES/ends.png" alt="Trophy"></div></div>';
+    html +=   '<h1 class="win-title">Wow!<br>You\'ve made it.</h1>';
+    html +=   '<p class="win-subtitle">Congratulations,<br>you have a deal now.</p>';
+    html +=   '<div class="win-stats-row">';
+    html +=     '<div class="win-stat"><div class="win-stat-label">' + escapeHtml(result.limitLabel || "Hidden minimum") + '</div><div class="win-stat-value">' + fmt(result.ownerLimit) + '</div></div>';
+    html +=     '<div class="win-stat"><div class="win-stat-label">Final price</div><div class="win-stat-value">' + (result.dealPrice!=null ? fmt(result.dealPrice) : '—') + '</div></div>';
+    html +=   '</div>';
+    html +=   '<div class="end-actions" style="text-align:center; margin-top:26px;">';
+    html +=     '<button class="end-btn primary" id="tryAgainBtn" style="width:100%;">Play again</button>';
+    html +=   '</div>';
+    html += '</div>';
+  } else if(noDeal){
+    endBody.classList.add('centered');
+    html += '<div class="result-banner" style="text-align:center;">';
+    html +=   '<h1 class="result-title" style="color:#fff;">No deal made</h1>';
+    html +=   '<p class="result-message">' + escapeHtml(result.resultMessage || "They weren't willing to close this one.") + ' Want to try again?</p>';
+    html += '</div>';
+    html += '<div class="end-actions" style="text-align:center;">';
+    html +=   '<button class="end-btn primary" id="tryAgainBtn" style="width:100%;">Try again</button>';
+    html += '</div>';
+  }
+   else {
+    endBody.classList.add('centered');
+    html += '<div class="result-banner" style="text-align:center;">';
+      html +=   '<h1 class="result-title" style="color:#fff;">Deal made — but not close</h1>';
+    html +=   '<p class="result-message">You settled at ' + fmt(result.dealPrice) + ', well short of the ' + escapeHtml(result.limitLabel || 'hidden limit') + '. Want to try again for a better number?</p>';
+    html += '</div>';
+    html += '<div class="win-stats-row" style="margin:22px auto 0;">';
+      html += '<style>.stats-row .win-stat, .win-stats-row .win-stat{ animation-delay:0s !important; }</style>';
+html +=   '<div class="win-stat"><div class="win-stat-label">Final price</div><div class="win-stat-value">' + fmt(result.dealPrice) + '</div></div>';
+html +=   '<div class="win-stat"><div class="win-stat-label">' + escapeHtml(result.limitLabel || 'Hidden limit') + '</div><div class="win-stat-value">' + fmt(result.ownerLimit) + '</div></div>';
+html += '</div>';
+html += '<div class="end-actions" style="text-align:center; margin-top:24px;">';
+html +=   '<button class="end-btn primary" id="tryAgainBtn" style="width:100%;">Try again</button>';
+html += '</div>';
+  }
+  endBody.innerHTML = html;
+
+  function escapeHtml(s){
+    return String(s).replace(/[&<>"]/g, function(c){
+      return c==='&' ? '&amp;' : c==='<' ? '&lt;' : c==='>' ? '&gt;' : '&quot;';
+    });
+  }
+
+  // ============================================================
+  // ACTIONS
+  // ============================================================
+    // ============================================================
+  // ACTIONS
+  // ============================================================
+  const tryAgainBtn = document.getElementById('tryAgainBtn');
+  if(tryAgainBtn){
+    tryAgainBtn.addEventListener('click', function(){
+      window.location.href = 'briefing.html?scenario=' + encodeURIComponent(result.scenarioKey);
+    });
+  }
+
+  const copyBtn = document.getElementById('copyBragBtn');
+  if(copyBtn){
+    copyBtn.addEventListener('click', function(){
+      const text = document.getElementById('bragText').textContent;
+      const original = copyBtn.textContent;
+      function showCopied(){ copyBtn.textContent = 'Copied!'; setTimeout(function(){ copyBtn.textContent = original; }, 1500); }
+      if(navigator.clipboard && navigator.clipboard.writeText){
+        navigator.clipboard.writeText(text).then(showCopied).catch(function(){ fallbackCopy(text, showCopied); });
+      } else {
+        fallbackCopy(text, showCopied);
+      }
+    });
+  }
+  function fallbackCopy(text, cb){
+    try{
+      const ta = document.createElement('textarea');
+      ta.value = text; ta.style.position = 'fixed'; ta.style.opacity = '0';
+      document.body.appendChild(ta); ta.select();
+      document.execCommand('copy');
+      document.body.removeChild(ta);
+      cb();
+    }catch(e){}
+  }
+
+  // ============================================================
+  // WIN / LOSE JUICE
+  // ============================================================
+   //if(win) fireConfetti();// else shakePhone();
+   if(win) phone.classList.add('win-bg');
+})();
+</script>
+</body>
+</html>

@@ -1,0 +1,1006 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8" />
+<meta name="viewport" content="width=device-width, initial-scale=1.0, viewport-fit=cover" />
+<title>Mol Bhav — Briefing</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Rozha+One&family=Playfair+Display:wght@500;600;700&family=Manrope:wght@400;500;600;700;800&display=swap" rel="stylesheet">
+<style>
+  /* ============================================================
+     YOUR EXACT ORIGINAL CSS
+     ============================================================ */
+  :root{
+    --bg-deep:#1E2438;
+    --bg-deep-2:#141828;
+    --paper:#F4ECDC;
+    --paper-edge:#E1D2B2;
+    --ink:#11172E;
+    --muted:#767C8C;
+    --turmeric:#B8923C;
+    --turmeric-dark:#8F6E28;
+    --brick:#A6472E;
+    --paan:#55754A;
+    --indigo-a:#3B4A6B;
+    --indigo-a-dark:#28314C;
+    --plum:#6B4A63;
+    --terracotta:#92564A;
+    --terracotta-dark:#7A4740;
+    --them-bubble:#B8923C ;
+    --them-bubble-text:#302B25;
+    --brief-them-bg:#F5F5F5; /* Gray for Landlord */
+    --brief-them-text:#111111;
+    --brief-you-bg:#F8D299;  /* Yellow for You */
+    --brief-you-bg-dark:#F0C070;
+    --brief-you-text:#111111;
+    --info-surface:#F4EFE5;
+    --soft-divider:#E8DFD1;
+    --diff-easy-bg:#E7EFE5;   --diff-easy-text:#567052;
+    --diff-medium-bg:#F5EAD3; --diff-medium-text:#916A22;
+    --diff-hard-bg:#F2E2DE;   --diff-hard-text:#99594E;
+    --home-1:#11172E;
+    --home-2:#3B3561;
+    --card-white:#FCFAF5;
+    --navy-play:#1E2447;
+    /* CHANGED: All text is now pure white */
+    --on-dark: #FFFFFF; 
+    --on-dark-soft: #FFFFFF;
+    --on-dark-faint: #FFFFFF;
+  }
+  *{ box-sizing:border-box; }
+  button{ -webkit-tap-highlight-color:transparent; -webkit-touch-callout:none; }
+  html,body{ height:100%; margin:0; }
+  body{
+    min-height:100vh; display:flex; align-items:center; justify-content:center;
+    background:
+      radial-gradient(circle at 20% 15%, rgba(217,164,65,0.10), transparent 40%),
+      radial-gradient(circle at 85% 80%, rgba(166,71,46,0.12), transparent 45%),
+      linear-gradient(160deg, var(--bg-deep), var(--bg-deep-2));
+    font-family:'Manrope', sans-serif; color:var(--ink); padding:24px 12px;
+  }
+  .phone{
+    width:min(420px,100%); min-height:680px; height:92vh; max-height:920px;
+    background:var(--paper);
+    border-radius:26px;
+    box-shadow: 0 30px 60px rgba(0,0,0,0.45), 0 2px 0 rgba(255,255,255,0.4) inset;
+    padding:20px 18px; display:flex; flex-direction:column; position:relative; overflow:hidden;
+  }
+  @media (min-width:1100px){ .phone{ width:min(440px,100%); } }
+  @keyframes shake{ 0%,100%{transform:translateX(0);} 20%{transform:translateX(-8px);} 40%{transform:translateX(7px);} 60%{transform:translateX(-5px);} 80%{transform:translateX(4px);} }
+  .phone.shake{ animation:shake .5s ease; }
+  @keyframes briefIn{ from{ opacity:0; transform:translateY(10px); } to{ opacity:1; transform:translateY(0); } }
+  .chat-header-bar, .brief-convo .convo-block, .brief-goal, .brief-caption, #startBtn{
+    animation: briefIn .5s ease both;
+  }
+  .chat-header-bar{ animation-delay:.02s; }
+  .brief-convo .convo-block.them{ animation-delay:.10s; }
+  .brief-convo .convo-block.you{ animation-delay:.18s; }
+  .brief-goal{ animation-delay:.24s; }
+  .brief-caption{ animation-delay:.30s; }
+  #startBtn{ animation-delay:.42s; }
+
+  .screen{ display:none; flex-direction:column; flex:1; min-height:0; }
+  .screen.active{ display:flex; animation:fadeUp .45s ease; }
+  @keyframes fadeUp{ from{opacity:0; transform:translateY(8px);} to{opacity:1; transform:translateY(0);} }
+
+  /* CHANGED: Back button is pure white */
+  .back-btn{ background:none; border:none; font-family:'Manrope', sans-serif; font-weight:700; font-size:13px; color:#FFFFFF; cursor:pointer; align-self:flex-start; margin-bottom:6px; padding:4px 0; display:inline-flex; align-items:center; gap:4px; }
+  .back-btn:hover{ color:#FFFFFF; opacity: 0.8; }
+  .back-btn.small{ font-size:18px; padding:2px 8px; }
+  .sound-toggle{ background:none; border:none; font-size:17px; cursor:pointer; padding:2px 4px; opacity:0.75; }
+  .sound-toggle:hover{ opacity:1; }
+
+  #screen-briefing{
+    margin:-20px -18px;
+    padding:20px 18px 18px;
+    border-radius:26px;
+    position:relative;
+    overflow-y:auto;
+    overflow-x:hidden;
+    scrollbar-width:none;
+    background:linear-gradient(180deg, var(--home-1) 0%, var(--home-1) 72%, var(--home-2) 100%);
+  }
+  #screen-briefing::-webkit-scrollbar{ width:0; height:0; }
+
+  #screen-briefing .back-btn{
+    color:#FFFFFF; /* Pure White */
+    font-weight:700; font-size:13px; letter-spacing:0.2px;
+    margin-bottom:14px;
+    transition:color .2s ease, transform .2s ease;
+  }
+  #screen-briefing .back-btn:hover{ color:#FFFFFF; opacity: 0.8; transform:translateX(-2px); }
+
+  .brief-kicker{
+    font-family:'Manrope', sans-serif;
+    font-size:10px; font-weight:800;
+    letter-spacing:1.8px; text-transform:uppercase;
+    color:#FFFFFF; /* Pure White */
+    margin:2px 0 12px;
+  }
+
+  .chat-header-bar{
+    display:flex; align-items:center; gap:12px;
+    margin:0 0 28px;
+  }
+  .chat-header-bar .convo-avatar{
+    width:50px; height:50px; font-size:22px; flex-shrink:0;
+  }
+  .chat-header-meta{ min-width:0; }
+  .chat-header-name{
+    font-family:'Manrope', sans-serif;
+    font-weight:800; font-size:16.5px;
+    color:#FFFFFF; /* Pure White */
+    line-height:1.2;
+  }
+  .chat-header-sub{
+    font-family:'Manrope', sans-serif;
+    font-weight:600; font-size:12.5px;
+    color:#FFFFFF; /* Pure White */
+    line-height:1.3; margin-top:2px;
+  }
+
+  .brief-convo{
+    display:flex; flex-direction:column; gap:16px;
+    margin-bottom:22px; position:relative; z-index:1;
+  }
+  .convo-block{
+    display:flex; flex-direction:column; gap:6px;
+    max-width:86%;
+  }
+  .convo-block.them{ align-self:flex-start; }
+  .convo-block.you{ align-self:flex-end; align-items:flex-end; }
+  
+  /* CHANGED: Label is pure white */
+  .convo-label{
+    font-family:'Manrope', sans-serif;
+    font-size:9px; font-weight:800;
+    letter-spacing:1.6px; text-transform:uppercase;
+    color:#FFFFFF; /* Pure White */
+    padding:0 6px;
+  }
+  .convo-avatar{
+    width:26px; height:26px; border-radius:50%; flex-shrink:0;
+    display:flex; align-items:center; justify-content:center;
+    font-size:13px;
+  }
+  .convo-avatar img{ width:100%; height:100%; object-fit:cover; border-radius:50%; }
+  .convo-block.you .convo-label{ color:#FFFFFF; /* Pure White */ }
+  
+  .convo-bubble{
+    padding:12px 16px;
+    font-family:'Manrope', sans-serif;
+    font-size:14.5px; line-height:1.5; font-weight:500;
+    border-radius:18px;
+  }
+  
+  /* BUBBLE COLORS (Text inside remains black for readability) */
+  /* LANDLORD BUBBLE (Gray) */
+  .convo-bubble.them{
+    background:#F5F5F5; /* Gray */
+    color:#111111;      /* Black */
+    border-bottom-left-radius:5px;
+  }
+  /* YOU BUBBLE (Yellow) */
+  .convo-bubble.you{
+    background:#F8D299; /* Yellow */
+    color:#111111;      /* Black */
+    border-bottom-right-radius:5px;
+    box-shadow:0 6px 16px rgba(0,0,0,0.10);
+  }
+
+  /* CHANGED: Timestamp is pure white */
+  .convo-timestamp{
+    font-family:'Manrope', sans-serif;
+    font-size:10.5px; font-weight:600;
+    color:#FFFFFF; /* Pure White */
+    padding:0 6px;
+  }
+
+  .brief-goal{ margin:0 0 16px; }
+  .brief-goal-label{
+    display:block;
+    font-family:'Manrope', sans-serif;
+    font-size:10px; font-weight:800;
+    letter-spacing:1.6px; text-transform:uppercase;
+    color:#FFFFFF; /* Pure White */
+    margin-bottom:6px;
+  }
+  .brief-note{
+    font-family:'Manrope', sans-serif;
+    font-size:13px; line-height:1.55; font-weight:500;
+    color:#FFFFFF; /* Pure White */
+    margin:0; padding:0 2px; max-width:96%;
+  }
+
+  .brief-info-row{
+    display:flex;
+    justify-content:space-between;
+    margin:0 0 6px; padding:0 2px;
+  }
+  .brief-info-item{
+    flex:1 1 0;
+    display:flex; flex-direction:column; gap:5px;
+  }
+  .brief-info-item:first-child{ align-items:flex-start; text-align:left; }
+  .brief-info-item:nth-child(2){ align-items:center; text-align:center; }
+  .brief-info-item:last-child{ align-items:flex-end; text-align:right; }
+  .brief-info-item{ display:flex; flex-direction:column; gap:5px; }
+  .brief-info-label{
+    font-family:'Manrope', sans-serif;
+    font-size:9.5px; font-weight:800;
+    letter-spacing:1.1px; text-transform:uppercase;
+    color:#FFFFFF; /* Pure White */
+    white-space:nowrap;
+  }
+  .brief-info-value{
+    font-family:'Manrope', sans-serif;
+    font-size:15px; font-weight:800;
+    color:#FFFFFF; /* Pure White */
+    white-space:nowrap;
+  }
+
+  .diff-pill{
+    display:inline-block;
+    font-family:'Manrope', sans-serif;
+    font-size:10.5px; font-weight:800;
+    letter-spacing:0.3px;
+    padding:2px 10px; border-radius:20px; line-height:1.6;
+  }
+  .diff-pill.diff-easy{   background:#F5F5F5; color:#111111; }
+  .diff-pill.diff-medium{ background:#F8D299;   color:#111111; }
+  .diff-pill.diff-hard{   background:#111111;   color:#FFFFFF; }
+
+  #startBtn{
+    width:100%;
+    margin-top:auto;
+    padding:16px 22px;
+    border-radius:18px;
+    border:none;
+    background:#F8D299; /* Yellow */
+    color:#111111;      /* Black */
+    font-family:'Manrope', sans-serif;
+    font-weight:800; font-size:15px; letter-spacing:0.2px;
+    display:flex; align-items:center; justify-content:center; gap:10px;
+    cursor:pointer; flex-shrink:0;
+    box-shadow:0 12px 26px rgba(0,0,0,0.28);
+    transition:transform .18s ease, box-shadow .25s ease, background .25s ease;
+    -webkit-tap-highlight-color:transparent;
+  }
+  #startBtn:hover{
+    background:#E5B86E;
+    box-shadow:0 16px 32px rgba(0,0,0,0.32);
+  }
+  #startBtn:active{ transform:scale(0.985); background:#E5B86E; }
+  #startBtn:focus-visible{ outline:2px solid #111111; outline-offset:3px; }
+  #startBtn .arrow{
+    display:inline-block; font-weight:500;
+    transition:transform .25s cubic-bezier(.34,1.4,.64,1);
+  }
+  #startBtn:hover .arrow{ transform:translateX(4px); }
+
+  @media (max-width:480px){
+    .phone{ padding:14px 12px; border-radius:0; height:100vh; max-height:none; box-shadow:none; }
+    body{ padding:0; }
+    #screen-briefing{ margin:-14px -12px; padding:16px 14px; border-radius:0; }
+    .chat-header-name{ font-size:15.5px; }
+    .chat-header-sub{ font-size:12px; }
+    .brief-info-row{ gap:20px; }
+    .convo-block{ max-width:90%; }
+    .brief-note{ font-size:12.5px; }
+  }
+</style>
+</head>
+<body>
+<div class="phone" id="phone">
+  <section id="screen-briefing" class="screen active">
+    <button class="back-btn" id="backFromBriefing" onclick="window.location.href='index.html'">
+      <svg viewBox="0 0 24 24" width="15" height="15" fill="none" stroke="currentColor" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round"><path d="M15 6 L9 12 L15 18"/></svg>
+      <span>Back</span>
+    </button>
+
+    <div class="brief-kicker" id="briefTag"></div>
+
+    <div class="chat-header-bar">
+      <span class="convo-avatar" id="briefAvatar">
+        <img id="briefAvatarImg" alt="" style="display:none;">
+        <span id="briefAvatarEmoji">🙂</span>
+      </span>
+      <div class="chat-header-meta">
+        <div class="chat-header-name" id="briefRoleLabel">Seller</div>
+        <div class="chat-header-sub" id="briefTitle"></div>
+      </div>
+    </div>
+
+    <div class="brief-convo">
+      <div class="convo-block them">
+        <div class="convo-bubble them" id="briefOwnerBubble"></div>
+      </div>
+      <div class="convo-block you">
+        <span class="convo-label">You</span>
+        <div class="convo-bubble you" id="briefYouBubble"></div>
+        <span class="convo-timestamp">Just now</span>
+      </div>
+    </div>
+
+    <div class="brief-goal">
+      <span class="brief-goal-label">Your goal</span>
+      <p class="brief-note">Find a number that works for both of you — and leave them glad they dealt with you.</p>
+    </div>
+
+    <div class="brief-info-row">
+      <div class="brief-info-item">
+        <span class="brief-info-label">Starting gap</span>
+        <span class="brief-info-value" id="briefGap"></span>
+      </div>
+      <div class="brief-info-item">
+        <span class="brief-info-label">Rounds</span>
+        <span class="brief-info-value">5–7</span>
+      </div>
+      <div class="brief-info-item">
+        <span class="brief-info-label">Difficulty</span>
+        <span class="diff-pill" id="briefDiff"></span>
+      </div>
+    </div>
+
+    <button class="primary-btn" id="startBtn">
+      <span>Start negotiating</span>
+      <span class="arrow">→</span>
+    </button>
+  </section>
+</div>
+
+<script>
+  // ============================================================
+  // SCENARIO DATA
+  // ============================================================
+  // SCENARIO DATA  (categories live here — add more freely,
+  // the carousel builds itself from this object)
+  // ============================================================
+  const SCENARIOS = {
+    rent: {
+      title: 'Renting a room · Andheri West', icon:'🏠', color:'#B9822E',
+      hook: 'Bring the rent down without the landlord souring on you.',
+      roleLabel: 'Landlord',
+      voice: 'A landlord in Mumbai — measured and a bit cautious, has dealt with difficult tenants before so he chooses words carefully. Talks plainly, sometimes brings up practical things like cash flow or upkeep rather than just haggling over the number.',
+      openingOwnerTemplate: '{ask}. Final price, good flat.',
+      openingPlayerTemplate: 'I was thinking more like {offer}.',
+      askMin: 1400, askMax: 1600, offerMin: 900, offerMax: 1150,
+      limitLabel: "Owner's hidden minimum",
+      roundTo: 50, direction: -1, urgencyBias: 0.5,
+      neutralShiftRange:[40,120],
+      urgencyHints: { high: "seems in a hurry to close this", medium: "no particular rush, but listening", low: "in no hurry at all" },
+      moodHints: { warm: "seems to like you", neutral: "hard to read, just listening", tense: "sounding a little tense", annoyed: "sounding irritated" },
+      moves: {
+        flaw: { label:'Point out a flaw', icon:'🔍', playerLines:["The paint's peeling in the corner, and that tap drips all night.","The windows are old, there's a draft. And the kitchen cabinet is loose.","I noticed the bathroom fan doesn't work, and the floorboards creak."], ownerLines:["Fair, I'll get it fixed. {ask} works for me.","Every place has something wrong with it, honestly. {ask}, then.","You're not wrong about that. Let's say {ask}.","I've had contractors flake on me before, but fine — {ask}."], dropBase:80, dropVar:60, trustBase:-2, trustVar:4 },
+        upfront: { label:'Offer months upfront', icon:'💰', playerLines:["I can pay three months upfront, right now, no delays.","What if I give you six months' rent in advance?","I'll pay a full year upfront if we agree today."], ownerLines:["Upfront money always helps my cash flow. {ask}, deal.","Advance payment means one less thing to worry about. {ask}.","Cash flow matters more to me than a few hundred rupees. {ask}.","That works out well for me actually. {ask}."], dropBase:80, dropVar:80, trustBase:6, trustVar:4 },
+        connect: { label:'Vouch for yourself', icon:'🤝', playerLines:["I work nearby, quiet, no parties — just want a steady place to stay.","I'm a quiet person, I pay early, and I treat the place like my own.","I've been looking for a home, not just a room. This feels right."], ownerLines:["I've had enough drama with previous tenants, so this matters. {ask}.","You seem like someone who won't cause trouble. {ask}, and welcome.","Good tenants are worth more to me than a slightly higher rent. {ask}.","Alright, I like your vibe. {ask}."], dropBase:20, dropVar:20, trustBase:12, trustVar:6 },
+        firm: { label:'Hold firm', icon:'✋', playerLines:["{offer} is what I can do. I'm not moving on that.","Look, I respect your price, but {offer} is my limit.","I've thought about it a lot — {offer} is genuinely all I can stretch to."], ownerLines:["You're not budging, I see. Fine, {ask}.","Alright, {ask}. You made your point.","I don't usually go this low, but {ask}, take it.","Hard bargainer, aren't you. {ask}."], dropBase:60, dropVar:40, trustBase:-4, trustVar:4 },
+        compromise: { label:'Split the difference', icon:'⚖️', playerLines:["Let's just meet in the middle — {mid}?","How about we split the gap at {mid}?","We're close. Let's call it {mid} and shake on it."], acceptLines:["Alright, {ask} — meeting you there.","Fair enough, let's do {ask}.","That works for me, {ask} it is."], partialLines:["Not quite there, but I can do {ask}.","Close, but let's say {ask} for now.","Getting warmer, but I'm at {ask}."], trustAccept:[2,6], trustPartial:[-4,0] },
+        compare: { label:'Compare to nearby flat', icon:'📉', playerLines:["I saw a similar flat two lanes away for less.","There's a comparable place nearby renting for quite a bit less.","Prices around here for similar flats are noticeably lower."], ownerLines:["Location matters more than people give it credit for, but — {ask}.","Every building's different, but I hear you. {ask}.","That one probably has its own issues. Still, {ask}."], dropBase:90, dropVar:60, trustBase:-3, trustVar:4 }
+        ,lease: { label:'Offer a longer lease', icon:'📝', playerLines:["I'll sign an 11-month agreement instead of month-to-month.","I'm looking to stay long-term, not just a few months.","Happy to commit to a full year if that helps."], ownerLines:["Stability's worth something to me, honestly. {ask}.","I'd rather not deal with turnover every few months. {ask}.","A longer commitment changes my thinking here. {ask}."], dropBase:70, dropVar:50, trustBase:8, trustVar:4 }
+        ,maintenance: { label:'Ask for maintenance included', icon:'🔧', playerLines:["Can the maintenance charges be included in this?","What if maintenance is bundled into the rent?","I'd rather have one number that includes maintenance."], ownerLines:["That I can work with. {ask}, maintenance included.","Fine, let's bundle it in. {ask} covers everything.","Simpler for both of us, honestly. {ask}, all included."], dropBase:40, dropVar:30, trustBase:2, trustVar:4 }
+        ,referral: { label:'Mention a referral', icon:'👥', playerLines:["I have a colleague also looking for a room in this building.","A friend of mine is searching for a place nearby too.","I could point a couple of people your way if this works out."], ownerLines:["Good tenants bringing good tenants — that's worth something. {ask}.","I appreciate that, honestly. {ask}.","Referrals save me a lot of hassle. {ask}."], dropBase:30, dropVar:20, trustBase:10, trustVar:5 }
+      }
+    },
+    rickshaw: {
+      title: 'Auto-rickshaw · Dadar to Bandra', icon:'🛺', color:'#55754A',
+      hook: 'Haggle the fare before you even get in.',
+      roleLabel: 'Driver',
+      voice: 'A Mumbai auto-rickshaw driver — casual, a little cheeky, in a hurry to get moving. Speaks in English but drops in a single Hindi/Mumbai word sometimes for flavor (please, yaar, bhai, chalo, thik hai,aree) — the sentence itself stays in English, never a full Hindi phrase. Talks fast and informal, like he\'s got somewhere to be.',
+      openingOwnerTemplate: '{ask}. Meter is broken.',
+      openingPlayerTemplate: 'I usually pay {offer} for this route.',
+      askMin: 180, askMax: 220, offerMin: 100, offerMax: 140,
+      limitLabel: "Driver's hidden minimum",
+      roundTo: 10, direction: -1, urgencyBias: 0.7,
+      neutralShiftRange:[10,30],
+      urgencyHints: { high: "keeps checking traffic, wants to go", medium: "no particular rush, but listening", low: "in no hurry, engine's off" },
+      moodHints: { warm: "seems to like you", neutral: "hard to read, just listening", tense: "sounding a little tense", annoyed: "sounding irritated" },
+      moves: {
+        flaw: { label:'Call out the meter', icon:'🔍', playerLines:["The meter's 'broken' with every driver on this route, huh?","I take this route daily. The meter magically works for locals.","Broken meter? It's the same story every time."], ownerLines:["Arre, everyone on this route says that. Fine, {ask}.","Yaar, you're killing me with this. Fine, {ask}.","Fair point, can't argue with that — chalo, {ask}.","Theek hai — {ask}."], dropBase:20, dropVar:20, trustBase:-8, trustVar:4 },
+        upfront: { label:'Offer exact change', icon:'💰', playerLines:["I'll pay exact change right now, no waiting around.","I've got the exact cash in hand. Let's just go.","Exact money, no stops for change. Deal?"], ownerLines:["Exact change? Chalo {ask}, no time waste.","Arre wah, that helps. {ask}, let's go.","Thik hai, {ask} — cash mein sab clear.","Done, no change hassle. {ask}."], dropBase:30, dropVar:30, trustBase:4, trustVar:4 },
+        connect: { label:'Say you\'re a regular', icon:'🤝', playerLines:["I take this route every day, you know the drill.","I'm a regular. You'll see me every morning.","I live just down the road. We'll run into each other often."], ownerLines:["Regulars get a discount, thik hai — {ask}.","Arre, you're practically family now. {ask}, chalo.","I see you every day, chalo — {ask} then.","Good to have regulars. {ask} for you."], dropBase:10, dropVar:10, trustBase:8, trustVar:4 },
+        firm: { label:'Hold firm', icon:'✋', playerLines:["{offer}. Not a rupee more.","That's my final offer, bhai. {offer}.","I'm not bargaining anymore. {offer} is it."], ownerLines:["Yaar, you're killing me. Thik hai, {ask}.","Bas bhai, just take it — {ask}, I'm getting late.","Don't do this, yaar. {ask}, final.","Tough customer. Chalo, {ask}."], dropBase:40, dropVar:30, trustBase:-6, trustVar:6 },
+        compromise: { label:'Split the difference', icon:'⚖️', playerLines:["Let's just split it — {mid}?","Thik hai, {mid} and we go?","Meet me at {mid}."], acceptLines:["Thik hai, {ask}. Chalo, let's go.","Fine, {ask} it is. Let's go.","Done, {ask}. Hop in."], partialLines:["Not that low, but {ask}, final.","Bit more than that — {ask}.","Hmm, {ask} and no less, chalo."], trustAccept:[2,5], trustPartial:[-3,0] }
+        ,hail: { label:'Threaten to hail another', icon:'🚕', playerLines:["There's another one right there, I'll just ask him.","I'll flag down the next one if this doesn't work.","Plenty of other autos around, no rush for me."], ownerLines:["Arre wait, don't go — {ask}, chalo.","Theek hai, theek hai, {ask}, don't leave.","Fine, fine, no need for that — {ask}."], dropBase:30, dropVar:20, trustBase:-5, trustVar:4 }
+        ,standard: { label:'Cite the standard fare', icon:'📏', playerLines:["Everyone charges around {offer} for this route, you know that.","This route's usual rate is way lower than that.","I know what this ride normally costs, bhai."], ownerLines:["Fine, fine — {ask}, you know the rates.","Can't fool you, can I. {ask}.","Yaar, thik hai — {ask}."], dropBase:25, dropVar:15, trustBase:-2, trustVar:4 }
+        ,roundtrip: { label:'Offer a round trip', icon:'🔁', playerLines:["I'll need a ride back too, can we agree a round-trip rate?","What if you wait and take me back as well?","I could use you for the return trip too."], ownerLines:["Round trip changes the math for me. {ask} for this leg.","Arre, that works out well actually. {ask}.","Good, steady work — {ask}, chalo."], dropBase:15, dropVar:10, trustBase:6, trustVar:4 }
+        ,patience: { label:'Act unbothered', icon:'😌', playerLines:["Take your time, I'm not in a rush, I'll just wait for another one.","No hurry on my end, plenty of autos pass by here.","I can wait, honestly, not a big deal for me."], ownerLines:["Okay okay, {ask}, let's just go.","Arre fine, {ask}, no need to wait around.","Yaar, {ask} then, let's not waste time."], dropBase:20, dropVar:15, trustBase:4, trustVar:4 }
+      }
+    },
+    salary: {
+      title: 'Salary negotiation · Product Designer', icon:'💼', color:'#3B4A6B',
+      hook: 'Push your number up without sounding greedy.',
+      roleLabel: 'Recruiter',
+      voice: 'A tech recruiter — professional but genuinely warm, not stiff corporate-speak. Talks like a real person who likes their job and the candidate, drops the formality a bit when being honest about numbers.',
+      openingOwnerTemplate: 'We can offer {ask}/month.',
+      openingPlayerTemplate: 'I was expecting closer to {offer}.',
+      askMin: 85000, askMax: 95000, offerMin: 105000, offerMax: 122000,
+      limitLabel: "Their real max budget",
+      roundTo: 2500, direction: 1, urgencyBias: 0.3,
+      neutralShiftRange:[1000,3000],
+      urgencyHints: { high: "needs to close this role fast", medium: "no particular rush, but engaged", low: "in no hurry, casual about timing" },
+      moodHints: { warm: "sounds genuinely enthusiastic", neutral: "professional, hard to read", tense: "sounding a little guarded", annoyed: "sounding a bit short" },
+      moves: {
+        flaw: { label:'Question the scope', icon:'🔍', playerLines:["The role's scoped like two jobs in one, honestly.","Looking at the JD, this is more senior than advertised.","The responsibilities are wide — this feels like a lead role."], ownerLines:["Fair read on the scope, honestly. We could do {ask}.","You're right, it's broader than the JD suggests. {ask}, then.","Let me be honest with you — {ask}, and that's pushing it already.","Noted, that's a fair point. {ask}."], dropBase:4000, dropVar:3000, trustBase:-6, trustVar:4 },
+        upfront: { label:'Offer a fast start', icon:'⚡', playerLines:["I can start in two weeks, no notice-period drama.","I'm ready to join immediately, if the numbers work.","My notice period is already served. I can start next Monday."], ownerLines:["That timeline actually helps us a lot internally. {ask} works.","Good to know, that changes things a bit. {ask}, then.","We can move faster on our end too then. {ask}."], dropBase:3000, dropVar:4000, trustBase:4, trustVar:4 },
+        connect: { label:'Show genuine interest', icon:'🤝', playerLines:["I've followed the team's work for a while — genuinely excited about this one.","This isn't just any job for me. I really admire what you're building.","I've been wanting to work with this team for years. This feels personal."], ownerLines:["It's nice to hear someone who's not just collecting offers. {ask}.","That kind of interest is rare, honestly. {ask}.","Good to know you're not just shopping around. {ask}."], dropBase:2000, dropVar:2000, trustBase:14, trustVar:6 },
+        firm: { label:'Hold firm', icon:'✋', playerLines:["{offer} is my number. I'm confident in it.","Based on the market and my skills, {offer} is fair.","I don't want to negotiate against myself. {offer} is it."], ownerLines:["Appreciate you being upfront about your number. We can do {ask}.","Let me check what I can actually push through — {ask}.","Fair enough, {ask} works on our end.","You know your worth. We'll do {ask}."], dropBase:5000, dropVar:4000, trustBase:-6, trustVar:6 },
+        compromise: { label:'Meet in the middle', icon:'⚖️', playerLines:["Let's land in the middle — {mid}?","Split the difference at {mid}?","We're close. Let's just meet at {mid}."], acceptLines:["Let me be honest, {ask} is where I can land. Deal.","That works for me, {ask} it is.","Fair enough. {ask}."], partialLines:["Not quite, but we can stretch to {ask}.","Getting closer — how about {ask}?","I can do {ask}, that's about my ceiling."], trustAccept:[2,6], trustPartial:[-3,1] }
+        ,marketdata: { label:'Cite market data', icon:'📊', playerLines:["Based on what similar roles pay right now, I was expecting more.","I've looked at comparable roles and the range is higher than this.","Market rate for this kind of role tends to run above this number."], ownerLines:["You've done your research, I can respect that. {ask}.","That's a fair benchmark, honestly. {ask}.","Let me be straight with you — {ask}, that's close to what we can justify."], dropBase:4500, dropVar:3000, trustBase:-4, trustVar:4 }
+        ,reviewpoint: { label:'Propose a review point', icon:'📅', playerLines:["Could we agree to revisit this after 6 months if I perform well?","What if we set a compensation review after the first two quarters?","I'd be open to starting here if there's a clear path to revisit it soon."], ownerLines:["That's fair — {ask} to start, with that in mind.","I like that approach, honestly. {ask}, and we'll revisit.","We can build that in. {ask} for now."], dropBase:3000, dropVar:2000, trustBase:8, trustVar:4 }
+      }
+    },
+    bazaar: {
+      title: 'Bazaar · Chandni Chowk', icon:'🧵', color:'#A6472E',
+      hook: 'Classic market haggling — quality, bulk, or charm?',
+      roleLabel: 'Shopkeeper',
+      voice: 'A shopkeeper in Chandni Chowk — warm, chatty, a little theatrical, genuinely enjoys the back-and-forth of haggling. Speaks in English, drops in a single Hindi word sometimes for flavor (try to understand my situation) — never a full Hindi phrase. Playful teasing, treats it like a fun game, not a fight.',
+      openingOwnerTemplate: '{ask}. Pure silk, best quality in the market.',
+      openingPlayerTemplate: "I was thinking more like {offer}. It's a gift, after all.",
+      askMin: 1200, askMax: 1500, offerMin: 650, offerMax: 850,
+      limitLabel: "Shopkeeper's hidden minimum",
+      roundTo: 50, direction: -1, urgencyBias: 0.3,
+      neutralShiftRange:[30,100],
+      urgencyHints: { high: "closing time, wants to clear stock", medium: "busy but attentive", low: "relaxed, enjoying the haggle" },
+      moodHints: { warm: "enjoying the banter", neutral: "hard to read, watching you", tense: "a little defensive", annoyed: "getting impatient" },
+      moves: {
+        flaw: { label:'Question the quality', icon:'🔍', playerLines:["The weave isn't that tight — I've seen better at half the price.","This looks like machine work, not handwoven.","The color is a bit uneven on this edge, see?"], ownerLines:["Arre, you have a sharp eye! Theek hai, {ask}.","Not many people notice that, beta. {ask}, final.","Haan, fair point. {ask} for you.","You know your fabric, I'll give you that. {ask}."], dropBase:100, dropVar:80, trustBase:-4, trustVar:4 },
+        upfront: { label:'Offer to buy more', icon:'💰', playerLines:["What if I take two pieces if you give me a better rate?","I'll buy three — but you have to make it worth my while.","I'm a regular shopper here. Help me out and I'll keep coming back."], ownerLines:["Two pieces? Now you're talking. {ask}.","Arre wah, bulk order! {ask}, then.","For a regular like you, {ask}."], dropBase:70, dropVar:60, trustBase:8, trustVar:4 },
+        connect: { label:'Appreciate the craft', icon:'🤝', playerLines:["I can tell this is good work. I just want a fair price for a genuine piece.","My grandmother used to weave — I know quality when I see it.","This is beautiful. Help me afford it, and I'll treasure it."], ownerLines:["Beta, you know your fabric! {ask}, only for you.","Arre, someone who appreciates good work — {ask}.","You have good taste. {ask}, and I mean it."], dropBase:30, dropVar:20, trustBase:12, trustVar:6 },
+        firm: { label:'Hold firm', icon:'✋', playerLines:["{offer} is all I have. I'll walk if that doesn't work.","I'm not bargaining anymore. {offer}.","That's my limit, bhai. Take it or leave it."], ownerLines:["Haggle with you, I can't win! Alright, {ask}.","You drive a hard bargain, beta. {ask}.","Theek hai, {ask}. Now go, before I change my mind!"], dropBase:50, dropVar:40, trustBase:-6, trustVar:6 },
+        compromise: { label:'Split the difference', icon:'⚖️', playerLines:["Let's meet halfway — {mid}?","Split it at {mid} and we're done.","How about {mid} and I'll tell my friends about your shop?"], acceptLines:["Done, {ask}! Tell your friends about my shop.","Chalo {ask}, and no more bargaining now!","Fine, {ask}. You've earned it."], partialLines:["Not that low, but {ask}.","Closer, but make it {ask}.","Hmm, {ask} and no less, beta."], trustAccept:[2,6], trustPartial:[-3,0] }
+        ,cheapershop: { label:'Mention a cheaper shop nearby', icon:'🏪', playerLines:["The shop next door had something similar for less.","I saw a comparable piece a few stalls down for cheaper.","Prices around here for this seem to vary a lot."], ownerLines:["Their quality, my quality — not the same! But {ask}.","Arre, everyone says that. Fine, {ask}.","Theek hai, theek hai — {ask}, but mine is better."], dropBase:110, dropVar:80, trustBase:-5, trustVar:4 }
+        ,throwin: { label:'Ask for something thrown in', icon:'🎀', playerLines:["Throw in a matching dupatta and we have a deal.","What if you add a small extra piece to sweeten this?","Include something small with it and I'll take it today."], ownerLines:["Arre, you drive a hard bargain — {ask}, and I'll add it.","Haan theek hai, {ask}, I'll throw that in too.","Only for you — {ask}, with the extra."], dropBase:60, dropVar:40, trustBase:6, trustVar:4 }
+        ,loyal: { label:'Mention you\'ll return often', icon:'🔁', playerLines:["I come to this market every month, I'll be back.","This won't be the last time I shop here.","I'd love to make this my regular stop."], ownerLines:["Good, I like regulars. {ask}.","Arre wah, come back anytime — {ask}.","For a future regular — {ask}, beta."], dropBase:40, dropVar:30, trustBase:10, trustVar:5 }
+      }
+    },
+    usedcar: {
+      title: 'Used Car · 2018 Honda City', icon:'🚗', color:'#6B4A63',
+      hook: 'Big number, bigger stakes. Read the dealer carefully.',
+      roleLabel: 'Car Dealer',
+      voice: 'A used-car dealer — smooth, confident, salesman charm without being pushy. Talks like someone who genuinely likes cars and wants a good match, drops in reassurance, not just numbers.',
+      openingOwnerTemplate: '{ask}. Clean record, single owner, well-maintained.',
+      openingPlayerTemplate: 'I was hoping for something closer to {offer}. The mileage is quite high.',
+      askMin: 480000, askMax: 540000, offerMin: 400000, offerMax: 440000,
+      limitLabel: "Dealer's hidden minimum",
+      roundTo: 5000, direction: -1, urgencyBias: 0.6,
+      neutralShiftRange:[3000,8000],
+      urgencyHints: { high: "needs to clear inventory this month", medium: "relaxed, knows the market", low: "in no rush, happy to wait for a buyer" },
+      moodHints: { warm: "warmed up to you", neutral: "professional, poker face", tense: "getting defensive about the car", annoyed: "short with you" },
+      moves: {
+        flaw: {
+          label: 'Point out the wear',
+          icon: '🔍',
+          playerLines: [
+            "The tires are pretty worn, there's a scratch on the door, and the AC isn't blowing as cold as it should.",
+            "I noticed the clutch has had issues in the service history, and the seats are showing their age too.",
+            "The pedal wear doesn't really line up with the mileage. I'm a little concerned the odometer may have been adjusted."
+          ],
+          ownerLines: [
+            "I won't argue with you on the tires or the scratch. But {ask}.",
+            "Yeah, the clutch has needed attention before. I priced the car with that in mind — {ask}.",
+            "I understand why that caught your eye. I can explain the mileage, but if you're still interested, {ask}."
+          ],
+          dropBase: 12000,
+          dropVar: 10000,
+          trustBase: -6,
+          trustVar: 4
+        },
+
+        upfront: {
+          label: 'Offer cash today',
+          icon: '💰',
+          playerLines: [
+            "I can pay in cash today. No waiting around for financing.",
+            "If we agree on the price, I can make the payment and take it home today.",
+            "I'm ready to close this today if we can make the numbers work."
+          ],
+          ownerLines: [
+            "That definitely makes things easier. If you're ready today, {ask}.",
+            "I do like the idea of getting this wrapped up without the wait. {ask}.",
+            "A same-day deal works for me. If you can do {ask}, we've got a deal."
+          ],
+          dropBase: 10000,
+          dropVar: 8000,
+          trustBase: 6,
+          trustVar: 4
+        },
+
+        connect: {
+          label: 'Show you’ll care for it',
+          icon: '🤝',
+          playerLines: [
+            "I've always liked this model. If I buy it, I'm planning to keep it properly maintained.",
+            "I've been looking for a clean Honda like this for a while. I'd rather buy one I actually care about.",
+            "My dad had the same model, so this one means a little more to me than just another car."
+          ],
+          ownerLines: [
+            "Honestly, I'd rather sell it to someone who's going to look after it. {ask}.",
+            "That's good to hear. I've taken care of this car myself, so {ask}.",
+            "I get that. If you're genuinely going to keep it in good shape, {ask}."
+          ],
+          dropBase: 4000,
+          dropVar: 3000,
+          trustBase: 14,
+          trustVar: 6
+        },
+
+        firm: {
+          label: 'Hold firm',
+          icon: '✋',
+          playerLines: [
+            "{offer} is where I’m comfortable. I don't think the car is worth more than that.",
+            "I've got a number in mind, and I'm going to stick with {offer}.",
+            "I've looked at a few similar cars around {offer}. I can't justify going higher."
+          ],
+          ownerLines: [
+            "I hear you, but I'm not quite ready to go that low. {ask}.",
+            "You’ve clearly checked the market. I can move a little, but {ask}.",
+            "Alright, I know you're serious. I can meet you at {ask}, but that's about as far as I can go."
+          ],
+          dropBase: 10000,
+          dropVar: 8000,
+          trustBase: -8,
+          trustVar: 6
+        },
+
+        compromise: {
+          label: 'Split the difference',
+          icon: '⚖️',
+          playerLines: [
+            "How about we meet in the middle at {mid} and call it a deal?",
+            "We're not that far apart. Meet me at {mid} and I'll close it today.",
+            "Let's split the difference at {mid}. That feels fair to me."
+          ],
+          acceptLines: [
+            "Alright, {ask}. I think that's fair. We've got a deal.",
+            "I can live with {ask}. Let's shake on it.",
+            "Okay, you've got a deal at {ask}. Let's get the paperwork started."
+          ],
+          partialLines: [
+            "I can't quite get down to that. I could do {ask}.",
+            "We're close. If you can make it {ask}, I'll let it go.",
+            "I need a little more than that. Meet me at {ask} and we're done."
+          ],
+          trustAccept: [2, 6],
+          trustPartial: [-4, 0]
+        },
+        cheaperlisting: {
+          label: 'Mention a cheaper listing elsewhere',
+          icon: '🔍',
+          playerLines: [
+            "I found a similar model listed for less online.",
+            "There's a comparable car nearby priced lower.",
+            "A few listings I've seen are priced under this."
+          ],
+          ownerLines: [
+            "Online listings don't always tell the full story, but — {ask}.",
+            "Condition varies a lot on those, honestly. Still, {ask}.",
+            "I hear you. {ask}, and you're getting a car I know the history of."
+          ],
+          dropBase: 14000,
+          dropVar: 10000,
+          trustBase: -6,
+          trustVar: 4
+        },
+        extras: {
+          label: 'Ask for extras thrown in',
+          icon: '🎁',
+          playerLines: [
+            "Can you throw in a full tank and the extended warranty?",
+            "What if the paperwork and a service are included?",
+            "Add a few extras and I'll close today."
+          ],
+          ownerLines: [
+            "I can do that along with — {ask}.",
+            "Fair ask, I can work that in. {ask}.",
+            "Alright, extras included — {ask}, and it's yours."
+          ],
+          dropBase: 8000,
+          dropVar: 6000,
+          trustBase: 6,
+          trustVar: 4
+        }
+      }
+    },
+    rentRenewal: {
+      title: 'Rent Renewal · Andheri West', icon:'📈', color:'#B9822E',
+      hook: 'Your landlord wants to raise the rent. Defend your number.',
+      roleLabel: 'Landlord',
+      voice: 'The same landlord, a year later — polite but firm about rising costs, brings up property tax and repairs to justify the increase, not just greed.',
+      openingOwnerTemplate: 'Renewal time — new rent is {ask}.',
+      openingPlayerTemplate: "I'd rather keep it closer to {offer}.",
+      askMin:1600, askMax:1800, offerMin:1300, offerMax:1450,
+      limitLabel: "Owner's lowest acceptable renewal",
+      roundTo:50, direction:-1, urgencyBias:0.35,
+      neutralShiftRange:[30,90],
+      urgencyHints:{ high:"wants this settled before month-end", medium:"open to discussing it", low:"in no rush, happy to let it drag" },
+      moodHints:{ warm:"seems reasonable about it", neutral:"listening, hasn't budged much", tense:"sounding a bit defensive", annoyed:"getting impatient with the back and forth" },
+      moves:{
+        flaw:{ label:'Point out unfixed issues', icon:'🔍', playerLines:["That leak from last year still hasn't been fixed properly.","The building's common areas have gone downhill this year.","A few things I raised months ago are still pending."], ownerLines:["Fair, I'll get to those. Still, {ask}.","Noted, I'll look into it. {ask}, though.","Alright, point taken. {ask}."], dropBase:60, dropVar:40, trustBase:-3, trustVar:4 },
+        upfront:{ label:'Offer to renew for 2 years', icon:'💰', playerLines:["I'll sign a two-year renewal instead of just one.","What if I lock this in for two years, no annual back-and-forth?","I'm happy to commit longer term if that helps."], ownerLines:["Two years saves me the hassle of finding someone new. {ask}.","That's worth something to me. {ask}.","Long-term tenants are worth a bit of flexibility. {ask}."], dropBase:70, dropVar:50, trustBase:8, trustVar:4 },
+        connect:{ label:"Remind them you've been reliable", icon:'🤝', playerLines:["I've paid on time every month and kept the place in good shape.","I've never given you any trouble as a tenant.","You know I take care of this place like it's my own."], ownerLines:["You have been reliable, I'll give you that. {ask}.","Good tenants are hard to find, true. {ask}.","I appreciate that, honestly. {ask}."], dropBase:30, dropVar:20, trustBase:12, trustVar:5 },
+        firm:{ label:'Hold firm on old rent', icon:'✋', playerLines:["{offer} is what I can manage. I can't go beyond that.","My budget really caps out at {offer}.","I've thought it over — {offer} is my limit."], ownerLines:["Costs have gone up on my end too, but — {ask}.","I hear you, but property tax alone justifies some increase. {ask}.","Alright, {ask}, meeting you partway."], dropBase:50, dropVar:30, trustBase:-4, trustVar:4 },
+        compromise:{ label:'Propose a smaller increase', icon:'⚖️', playerLines:["What about a smaller bump — {mid}?","Let's meet at {mid}, a fair middle ground.","How about {mid} instead of the full increase?"], acceptLines:["Alright, {ask}. Fair enough.","That works, {ask}.","Okay, {ask} it is."], partialLines:["Not quite, but I can do {ask}.","Closer, let's say {ask}.","I can stretch to {ask}."], trustAccept:[2,6], trustPartial:[-3,0] }
+      }
+    },
+    rwaParking: {
+      title: 'Society Parking Spot · RWA Office', icon:'🅿️', color:'#4C6B77',
+      hook: 'Bureaucratic and rule-bound — negotiate past the rulebook.',
+      roleLabel: 'RWA Secretary',
+      voice: 'A housing society secretary — formal, quotes rules and precedent, speaks like committee minutes rather than a person haggling. Warms up only if you sound reasonable and cooperative.',
+      openingOwnerTemplate: 'As per society norms, the monthly charge is {ask}.',
+      openingPlayerTemplate: "I was hoping it could be closer to {offer}.",
+      askMin:160, askMax:220, offerMin:60, offerMax:100,
+      limitLabel: "Lowest the secretary will approve",
+      roundTo:10, direction:-1, urgencyBias:0.2,
+      neutralShiftRange:[5,20],
+      urgencyHints:{ high:"wants this resolved before the next meeting", medium:"willing to discuss, no real deadline", low:"in absolutely no hurry, loves procedure" },
+      moodHints:{ warm:"sounding unusually cooperative", neutral:"citing rules, hard to move", tense:"getting formal and clipped", annoyed:"sounding officious and short" },
+      moves:{
+        flaw:{ label:'Question the fee structure', icon:'🔍', playerLines:["Other societies nearby charge less for the same thing.","This fee seems higher than what's listed in the bylaws.","I don't see why this rate applies to a single small car."], ownerLines:["The committee sets these rates uniformly, but — {ask}.","I can review that, though for now, {ask}.","Noted for the next meeting. For now, {ask}."], dropBase:20, dropVar:15, trustBase:-4, trustVar:4 },
+        upfront:{ label:'Offer to pay annually', icon:'💰', playerLines:["I can pay the full year upfront instead of monthly.","What if I settle this annually, in one payment?","I'll clear the whole year now if that simplifies things."], ownerLines:["Annual payment does reduce paperwork on our end. {ask}.","That's administratively easier for us. {ask}.","I can work with that. {ask}."], dropBase:20, dropVar:15, trustBase:6, trustVar:4 },
+        connect:{ label:"Mention you're an active resident", icon:'🤝', playerLines:["I've volunteered for society events and try to keep things smooth.","I've lived here a long time and try to be a cooperative resident.","I'd rather resolve this amicably than escalate it."], ownerLines:["Residents like you make my job easier, honestly. {ask}.","I do appreciate cooperative residents. {ask}.","Noted, and appreciated. {ask}."], dropBase:10, dropVar:10, trustBase:10, trustVar:5 },
+        firm:{ label:'Hold firm on your offer', icon:'✋', playerLines:["{offer} is what I believe is fair, and I'd like to stick with that.","I don't think I should pay more than {offer}.","{offer} is my final position on this."], ownerLines:["I'll need to note this as an exception, but — {ask}.","Alright, {ask}, though this isn't standard.","Fine, {ask}, for the sake of resolving this."], dropBase:15, dropVar:10, trustBase:-3, trustVar:4 },
+        compromise:{ label:'Propose a middle rate', icon:'⚖️', playerLines:["Could we settle at {mid}?","What about {mid} as a middle ground?","Let's agree on {mid} and close this."], acceptLines:["Acceptable. {ask}.","I can approve {ask}.","Alright, {ask} it is."], partialLines:["Not quite, but {ask} is workable.","Closer — {ask}.","I can approve {ask}, not lower."], trustAccept:[2,5], trustPartial:[-2,1] }
+      }
+    },
+    brokerFee: {
+      title: "Broker's Fee · Flat Purchase", icon:'🏢', color:'#6B5A3F',
+      hook: 'They only get paid if the deal closes — use that.',
+      roleLabel: 'Property Agent',
+      voice: 'A real estate broker — smooth-talking, deal-focused, subtly reminds you the flat could slip away, but ultimately more scared of the deal falling through than of a lower commission.',
+      openingOwnerTemplate: 'My brokerage on this is {ask}.',
+      openingPlayerTemplate: "I was expecting more like {offer}.",
+      askMin:1200, askMax:1500, offerMin:600, offerMax:800,
+      limitLabel: "Broker's lowest acceptable fee",
+      roundTo:50, direction:-1, urgencyBias:0.7,
+      neutralShiftRange:[30,90],
+      urgencyHints:{ high:"doesn't want this deal to slip away", medium:"confident but engaged", low:"has other buyers lined up, relaxed" },
+      moodHints:{ warm:"being unusually generous", neutral:"sticking to standard rates", tense:"sounding defensive about the fee", annoyed:"getting short about it" },
+      moves:{
+        flaw:{ label:'Question the value added', icon:'🔍', playerLines:["I found this flat myself online, you just handled paperwork.","This seems high for the amount of work involved.","Other brokers charge less for similar deals."], ownerLines:["I still handled the negotiation and paperwork, but — {ask}.","Fair point, I'll adjust. {ask}.","Every deal's different, but okay — {ask}."], dropBase:70, dropVar:50, trustBase:-4, trustVar:4 },
+        upfront:{ label:'Offer to close immediately', icon:'💰', playerLines:["I'm ready to sign today if we settle this now.","Let's close this deal right now, no delays.","I can finalize everything today if we agree."], ownerLines:["A quick close works well for me. {ask}.","I like that you're ready to move. {ask}.","Let's do that. {ask}, and we're done."], dropBase:60, dropVar:40, trustBase:6, trustVar:4 },
+        connect:{ label:'Mention future referrals', icon:'🤝', playerLines:["I have family also looking to buy in this area soon.","If this goes well, I'll definitely recommend you.","I'd rather build a relationship for future deals too."], ownerLines:["Future business matters to me, honestly. {ask}.","I appreciate that outlook. {ask}.","Referrals are worth a lot in this business. {ask}."], dropBase:40, dropVar:30, trustBase:10, trustVar:5 },
+        firm:{ label:'Hold firm on your offer', icon:'✋', playerLines:["{offer} is what I'm willing to pay for this.","I won't go above {offer} on brokerage.","{offer} is my final number here."], ownerLines:["This deal matters to me too, so — {ask}.","Alright, {ask}, let's not lose this over the fee.","Fine, {ask}. I'd rather close than lose it."], dropBase:50, dropVar:35, trustBase:-5, trustVar:4 },
+        compromise:{ label:'Split the difference', icon:'⚖️', playerLines:["Let's settle at {mid} and move forward.","How about {mid}, fair for both of us?","Meet me at {mid} and we finalize today."], acceptLines:["Deal, {ask}. Let's finalize.","Agreed, {ask}.","Alright, {ask}, let's proceed."], partialLines:["Not quite, but {ask} works.","Closer — {ask}.","I can do {ask}, that's my limit."], trustAccept:[2,6], trustPartial:[-3,0] }
+      }
+    },
+    outstationCab: {
+      title: 'Outstation Cab · Mumbai to Pune', icon:'🚙', color:'#3E6B5C',
+      hook: 'A longer trip, bigger fare, slower back-and-forth.',
+      roleLabel: 'Cab Driver',
+      voice: 'A cab driver for long outstation trips — relaxed and conversational since the trip takes hours, factors in fuel, tolls, and his own return journey when talking price.',
+      openingOwnerTemplate: '{ask} for the trip, tolls extra.',
+      openingPlayerTemplate: "I was hoping for closer to {offer}, all included.",
+      askMin:2400, askMax:2800, offerMin:1600, offerMax:1900,
+      limitLabel: "Driver's lowest fare",
+      roundTo:50, direction:-1, urgencyBias:0.4,
+      neutralShiftRange:[30,80],
+      urgencyHints:{ high:"needs the booking to make the trip worthwhile", medium:"open to negotiating, has other bookings too", low:"not desperate for this particular trip" },
+      moodHints:{ warm:"friendly, chatting about the route", neutral:"quoting standard rates", tense:"sounding a bit defensive about costs", annoyed:"getting short with the haggling" },
+      moves:{
+        flaw:{ label:'Compare to app-based fares', icon:'🔍', playerLines:["Ola and Uber quote less for this exact route.","I've done this trip before for less through an app.","The going rate for this route is lower than that."], ownerLines:["Apps don't cover my return trip fuel, but — {ask}.","Those rides don't always show up on time either. Still, {ask}.","Fair enough, {ask}."], dropBase:80, dropVar:60, trustBase:-4, trustVar:4 },
+        upfront:{ label:'Offer to pay tolls separately in cash', icon:'💰', playerLines:["I'll hand you toll cash directly as we go, no calculation later.","Tolls in cash upfront, simpler for both of us.","Let's keep tolls separate and settled in cash as we pass them."], ownerLines:["That's cleaner for me, no tracking later. {ask}.","I like that, saves confusion. {ask}.","Works for me. {ask}, tolls separate."], dropBase:60, dropVar:40, trustBase:6, trustVar:4 },
+        connect:{ label:"Mention you'll book return trip too", icon:'🤝', playerLines:["I'll likely need a ride back in a couple of days too.","If this goes well, I'll book you for the return as well.","I travel this route often, could become a regular booking."], ownerLines:["A return booking makes the trip worth it either way. {ask}.","Good to know, that changes things. {ask}.","I like steady customers. {ask}."], dropBase:50, dropVar:35, trustBase:10, trustVar:5 },
+        firm:{ label:'Hold firm on your offer', icon:'✋', playerLines:["{offer} is my budget for this trip, all in.","I can't go above {offer} for this.","{offer} is what I've budgeted, final."], ownerLines:["Long trip, but alright — {ask}.","Fine, {ask}, fuel prices considered.","Okay, {ask}, meeting you partway."], dropBase:70, dropVar:50, trustBase:-5, trustVar:5 },
+        compromise:{ label:'Split the difference', icon:'⚖️', playerLines:["Let's settle at {mid} for the whole trip.","How about {mid}, fair for both of us?","Meet me at {mid} and let's get going."], acceptLines:["Alright, {ask}. Let's go.","Deal, {ask}.","Okay, {ask}, hop in."], partialLines:["Not quite, but {ask} works.","Closer — {ask}.","I can do {ask}, that's it."], trustAccept:[2,6], trustPartial:[-3,0] }
+      }
+    },
+    usedBike: {
+      title: 'Used Scooter · Honda Activa 2020', icon:'🏍️', color:'#7A6B3F',
+      hook: 'A casual seller, not a pro — a gentler negotiation.',
+      roleLabel: 'Seller',
+      voice: 'A college student selling their old scooter — casual, a little unsure about negotiating, sometimes awkwardly honest about issues rather than smooth like a dealer.',
+      openingOwnerTemplate: 'Asking {ask} for it, good condition.',
+      openingPlayerTemplate: "I was thinking more like {offer}, honestly.",
+      askMin:48000, askMax:55000, offerMin:32000, offerMax:38000,
+      limitLabel: "Seller's lowest acceptable price",
+      roundTo:1000, direction:-1, urgencyBias:0.5,
+      neutralShiftRange:[500,1500],
+      urgencyHints:{ high:"needs the money soon, graduating and moving", medium:"open to offers, no big rush", low:"in no hurry, might just keep it otherwise" },
+      moodHints:{ warm:"friendly and easygoing about it", neutral:"unsure, thinking it over", tense:"sounding a bit awkward and defensive", annoyed:"getting a little frustrated with the haggling" },
+      moves:{
+        flaw:{ label:'Point out wear and tear', icon:'🔍', playerLines:["The tires look like they need replacing soon.","There's a bit of rust starting near the exhaust.","The seat cover is pretty worn out."], ownerLines:["Yeah, honestly, that's fair. {ask}.","I probably should've mentioned that. {ask}.","You're right, I'll adjust. {ask}."], dropBase:1500, dropVar:1200, trustBase:-3, trustVar:4 },
+        upfront:{ label:'Offer cash right now', icon:'💰', playerLines:["I've got cash on me right now, we could finish this today.","I can pay immediately if we agree on a number.","No waiting around — I can pay today."], ownerLines:["Oh that's great, actually, one less thing to worry about. {ask}.","That would really help me out. {ask}.","Today works perfectly for me. {ask}."], dropBase:1500, dropVar:1000, trustBase:8, trustVar:4 },
+        connect:{ label:'Show genuine interest in it', icon:'🤝', playerLines:["I've wanted this exact model for a while, glad I found one.","I'll take good care of it, promise.","This is exactly what I was looking for, honestly."], ownerLines:["Aw, that's nice to hear actually. {ask}.","Glad it's going to someone who wants it. {ask}.","That makes me feel better about selling it. {ask}."], dropBase:800, dropVar:600, trustBase:12, trustVar:5 },
+        firm:{ label:'Hold firm on your offer', icon:'✋', playerLines:["{offer} is really what I can afford right now.","I can't stretch past {offer}, sorry.","{offer} is my limit, honestly."], ownerLines:["Okay, um, I guess {ask} works.","Alright, {ask}, I need to sell it anyway.","Fine, {ask}, that's okay."], dropBase:1200, dropVar:900, trustBase:-3, trustVar:4 },
+        compromise:{ label:'Split the difference', icon:'⚖️', playerLines:["What if we just split it at {mid}?","How about {mid}, seems fair to both of us?","Let's meet at {mid} and be done with it."], acceptLines:["Yeah okay, {ask} works for me.","Sure, {ask}, deal.","Alright, {ask}, sounds good."], partialLines:["Hmm, I can maybe do {ask}.","Not quite, but {ask}?","Closer — {ask}, that's okay?"], trustAccept:[2,6], trustPartial:[-2,1] }
+      }
+    },
+    freelanceRate: {
+      title: 'Freelance Project Rate · UI Design', icon:'💻', color:'#3B4A6B',
+      hook: 'Push your rate up without scaring off the client.',
+      roleLabel: 'Founder',
+      voice: "A startup founder — casual, \"we're scrappy, pre-funding\" energy, genuinely likes your work but watches every rupee of runway closely.",
+      openingOwnerTemplate: 'We can do {ask} for the project.',
+      openingPlayerTemplate: "I was thinking more like {offer}, given the scope.",
+      askMin:15000, askMax:20000, offerMin:28000, offerMax:35000,
+      limitLabel: "Founder's real max budget",
+      roundTo:1000, direction:1, urgencyBias:0.4,
+      neutralShiftRange:[500,1500],
+      urgencyHints:{ high:"needs this shipped fast, under pressure", medium:"flexible on timeline, engaged", low:"in no rush, exploring options casually" },
+      moodHints:{ warm:"sounding genuinely impressed by your work", neutral:"careful, watching the budget", tense:"sounding a bit stressed about runway", annoyed:"sounding a bit short about the number" },
+      moves:{
+        flaw:{ label:'Point out the scope', icon:'🔍', playerLines:["This scope is really more than one deliverable, honestly.","Looking closer, this covers way more screens than usual.","The revisions alone would justify a higher number."], ownerLines:["Yeah, fair, the scope did grow. {ask}.","You're right, that's more work than I first said. {ask}.","Okay, noted — {ask}."], dropBase:2500, dropVar:2000, trustBase:-4, trustVar:4 },
+        upfront:{ label:'Offer a fast turnaround', icon:'⚡', playerLines:["I can turn this around in half the usual time.","I've got bandwidth to prioritize this immediately.","I can start today and move fast on it."], ownerLines:["Speed really matters to us right now. {ask}.","That helps a lot, honestly. {ask}.","Okay, that's worth something. {ask}."], dropBase:2000, dropVar:1500, trustBase:6, trustVar:4 },
+        connect:{ label:'Show genuine interest in the product', icon:'🤝', playerLines:["I actually really believe in what you're building here.","This isn't just a gig for me, I like the product.","I'd love to be part of this early, not just do the work."], ownerLines:["That means a lot, honestly. {ask}.","Good to have someone who cares. {ask}.","Okay, that changes things a bit. {ask}."], dropBase:1500, dropVar:1200, trustBase:12, trustVar:5 },
+        firm:{ label:'Hold firm on your rate', icon:'✋', playerLines:["{offer} is genuinely my rate for this scope.","I can't go below {offer} for work like this.","{offer} is what this is worth, honestly."], ownerLines:["Okay, let me see what we can stretch to — {ask}.","We're tight, but — {ask}.","Alright, {ask}, that's a push for us."], dropBase:2500, dropVar:2000, trustBase:-5, trustVar:5 },
+        compromise:{ label:'Meet in the middle', icon:'⚖️', playerLines:["Let's land at {mid} and get started.","How about {mid}, fair for both of us?","We're close — {mid} and I'm in."], acceptLines:["Okay, {ask}. Let's do it.","Deal, {ask}.","Alright, {ask}, sounds good."], partialLines:["Not quite, but {ask}?","Closer — {ask}, does that work?","I can stretch to {ask}, that's it though."], trustAccept:[2,6], trustPartial:[-3,1] }
+      }
+    },
+    instagramDeal: {
+      title: 'Brand Deal · Instagram Collab', icon:'📸', color:'#A6472E',
+      hook: 'Negotiate your fee and deliverables together.',
+      roleLabel: 'Brand Manager',
+      voice: 'A brand manager — casual-corporate, texts like a modern marketer, talks deliverables and "content buckets" alongside the fee, friendly but budget-conscious.',
+      openingOwnerTemplate: 'Budget for this collab is {ask}.',
+      openingPlayerTemplate: "My rate for this kind of deliverable is usually {offer}.",
+      askMin:8000, askMax:12000, offerMin:20000, offerMax:28000,
+      limitLabel: "Brand's real max budget",
+      roundTo:500, direction:1, urgencyBias:0.3,
+      neutralShiftRange:[250,750],
+      urgencyHints:{ high:"needs this live before a launch date", medium:"flexible on timing, engaged", low:"exploring options, no rush" },
+      moodHints:{ warm:"sounding excited about your content", neutral:"sticking to the budget sheet", tense:"sounding a bit stressed about approvals", annoyed:"sounding short about pushback on rate" },
+      moves:{
+        flaw:{ label:'Point out extra deliverables', icon:'🔍', playerLines:["This brief actually asks for three posts, not one.","Reels usually cost more than static posts, just so you know.","This includes usage rights too, which is a separate cost."], ownerLines:["Good catch, that does add up. {ask}.","Fair, let me adjust for that. {ask}.","Okay, noted — {ask}."], dropBase:1200, dropVar:900, trustBase:-4, trustVar:4 },
+        upfront:{ label:'Offer quick turnaround', icon:'⚡', playerLines:["I can have this shot and posted within 48 hours.","I've got a slot open this week if you need it fast.","I can prioritize this over other collabs right now."], ownerLines:["That timeline really helps us. {ask}.","Good to know, that's useful. {ask}.","Okay, that's worth it to us. {ask}."], dropBase:1000, dropVar:800, trustBase:6, trustVar:4 },
+        connect:{ label:'Show genuine brand love', icon:'🤝', playerLines:["I actually already use this product, this feels authentic for me.","My audience genuinely overlaps with your target market.","I've wanted to work with this brand for a while."], ownerLines:["That authenticity is exactly what we want. {ask}.","Good to hear, that matters to us. {ask}.","Okay, that's a good fit then. {ask}."], dropBase:800, dropVar:600, trustBase:12, trustVar:5 },
+        firm:{ label:'Hold firm on your rate', icon:'✋', playerLines:["{offer} is genuinely my rate for this kind of content.","I don't go below {offer} for a full deliverable like this.","{offer} is where I stand, honestly."], ownerLines:["Let me check what flexibility we have — {ask}.","We're tight this quarter, but — {ask}.","Okay, {ask}, that's a stretch for us."], dropBase:1200, dropVar:900, trustBase:-5, trustVar:5 },
+        compromise:{ label:'Meet in the middle', icon:'⚖️', playerLines:["Let's land at {mid} and lock this in.","How about {mid}, fair for both sides?","We're close — {mid} and I'm in."], acceptLines:["Okay, {ask}. Let's do this.","Deal, {ask}.","Alright, {ask}, sounds good."], partialLines:["Not quite, but {ask}?","Closer — {ask}, does that work?","I can stretch to {ask}, that's it."], trustAccept:[2,6], trustPartial:[-3,1] }
+      }
+    },
+    tutoringFee: {
+      title: 'Tutoring Fee · Class 10 Maths', icon:'📚', color:'#55754A',
+      hook: 'Warm but budget-conscious — prove your worth, not just your price.',
+      roleLabel: 'Parent',
+      voice: 'A parent hiring a home tutor — warm and polite, genuinely cares about their kid, but budget-conscious and wants reassurance about results before paying more.',
+      openingOwnerTemplate: "We were thinking {ask} a month.",
+      openingPlayerTemplate: "I usually charge closer to {offer} for this level.",
+      askMin:3000, askMax:4000, offerMin:6000, offerMax:7500,
+      limitLabel: "Parent's real max budget",
+      roundTo:250, direction:1, urgencyBias:0.3,
+      neutralShiftRange:[100,400],
+      urgencyHints:{ high:"exams are close, wants to start immediately", medium:"open to discussing, no big rush", low:"just exploring options for now" },
+      moodHints:{ warm:"sounding reassured about your teaching", neutral:"polite but budget-focused", tense:"sounding a bit worried about the cost", annoyed:"sounding a bit short about the back and forth" },
+      moves:{
+        flaw:{ label:'Explain the exam pressure', icon:'🔍', playerLines:["Board exam syllabus at this level really needs focused attention.","This stage needs more than just homework help, honestly.","Weak fundamentals at this level take real time to fix."], ownerLines:["That does worry me a bit, you're right. {ask}.","Okay, I understand the concern. {ask}.","Fair enough, that makes sense. {ask}."], dropBase:400, dropVar:300, trustBase:-3, trustVar:4 },
+        upfront:{ label:'Offer a trial class', icon:'⚡', playerLines:["I can do a free trial class first so you can see how it goes.","Let's start with one session before committing fully.","I'm happy to demonstrate my approach in a first class."], ownerLines:["That would help us decide, honestly. {ask}.","I like that, less risk for us. {ask}.","Okay, let's try that. {ask}."], dropBase:300, dropVar:250, trustBase:8, trustVar:4 },
+        connect:{ label:'Share your track record', icon:'🤝', playerLines:["My past students have shown real improvement in their scores.","I genuinely care about each student's progress, not just the hours.","I've been doing this for years and love seeing kids improve."], ownerLines:["That's reassuring to hear, honestly. {ask}.","Good to know, that matters to us. {ask}.","Okay, that helps ease my mind. {ask}."], dropBase:250, dropVar:200, trustBase:12, trustVar:5 },
+        firm:{ label:'Hold firm on your rate', icon:'✋', playerLines:["{offer} is genuinely my rate for this level.","I don't go below {offer} for board-level tutoring.","{offer} is where I stand, honestly."], ownerLines:["Let me see what we can manage — {ask}.","We're stretching a bit, but — {ask}.","Okay, {ask}, that's what we can do."], dropBase:400, dropVar:300, trustBase:-5, trustVar:5 },
+        compromise:{ label:'Meet in the middle', icon:'⚖️', playerLines:["Let's settle at {mid} a month.","How about {mid}, fair for both of us?","We're close — {mid} and I'm happy to start."], acceptLines:["Okay, {ask}. Let's start then.","Deal, {ask}.","Alright, {ask}, sounds good."], partialLines:["Not quite, but {ask}?","Closer — {ask}, does that work?","I can stretch to {ask}, that's it."], trustAccept:[2,6], trustPartial:[-3,1] }
+      }
+    },
+    sabziMandi: {
+      title: 'Sabzi Mandi · Vegetable Cart', icon:'🥬', color:'#4F7A3E',
+      hook: 'Small amounts, fast exchanges — a quick, punchy round.',
+      roleLabel: 'Vendor',
+      voice: 'A vegetable vendor at a local market — quick, chatty, deals in small amounts, sing-songy about freshness, moves fast since there are other customers waiting.',
+      openingOwnerTemplate: '{ask} for this, very fresh today.',
+      openingPlayerTemplate: "I'll give you {offer} for it.",
+      askMin:70, askMax:90, offerMin:45, offerMax:55,
+      limitLabel: "Vendor's lowest price",
+      roundTo:5, direction:-1, urgencyBias:0.2,
+      neutralShiftRange:[3,10],
+      urgencyHints:{ high:"wants to clear stock before it wilts", medium:"steady flow of customers, mildly attentive", low:"in no rush, plenty of stock left" },
+      moodHints:{ warm:"chatty and friendly about it", neutral:"quoting the usual rate", tense:"sounding a little short, busy", annoyed:"getting impatient, other customers waiting" },
+      moves:{
+        flaw:{ label:'Point out quality', icon:'🔍', playerLines:["A couple of these look a bit wilted, honestly.","This isn't as fresh as what I saw yesterday.","Some of these have spots on them."], ownerLines:["Arre, the rest is good, take a look. {ask}.","Fine, fine, {ask}.","Theek hai, {ask}, still good quality."], dropBase:8, dropVar:6, trustBase:-3, trustVar:4 },
+        upfront:{ label:'Offer to buy more', icon:'💰', playerLines:["I'll take double the quantity if you give me a better rate.","What if I buy for the whole week at once?","I'll take a big batch if the price is right."], ownerLines:["Bulk order, that works. {ask}.","Arre wah, good, {ask} then.","For a bigger order, {ask}."], dropBase:10, dropVar:8, trustBase:6, trustVar:4 },
+        connect:{ label:"Mention you're a regular", icon:'🤝', playerLines:["I buy from this cart every week, you know me.","I always come here, never anywhere else.","I'm practically a regular at this point."], ownerLines:["Arre, of course, {ask} for you.","Regulars get a little extra care. {ask}.","Good to see you again, {ask}."], dropBase:5, dropVar:5, trustBase:10, trustVar:5 },
+        firm:{ label:'Hold firm on your offer', icon:'✋', playerLines:["{offer}, that's what I'll pay, final.","I'm not going higher than {offer}.","{offer}, take it or I'll go elsewhere."], ownerLines:["Arre, thik hai, {ask}.","Fine, {ask}, don't go elsewhere.","Okay okay, {ask}."], dropBase:8, dropVar:6, trustBase:-3, trustVar:4 },
+        compromise:{ label:'Split the difference', icon:'⚖️', playerLines:["Let's just settle at {mid}.","How about {mid}, fair enough?","{mid}, and we're done here."], acceptLines:["Thik hai, {ask}.","Fine, {ask}.","Done, {ask}."], partialLines:["Not that low, {ask}.","Closer, {ask}.","Hmm, {ask}, final."], trustAccept:[2,5], trustPartial:[-2,1] }
+      }
+    },
+    jewelleryMaking: {
+      title: 'Jewellery Shop · Making Charges', icon:'💍', color:'#8A6D1F',
+      hook: "Gold rate is fixed. The making charges aren't.",
+      roleLabel: 'Goldsmith',
+      voice: "An independent local goldsmith — formal, proud of his craftsmanship, quick to clarify that gold rate is non-negotiable but softer on making charges, especially with cash or old-gold exchange.",
+      openingOwnerTemplate: 'Making charges on this piece come to {ask}.',
+      openingPlayerTemplate: "I was hoping making charges could be closer to {offer}.",
+      askMin:8000, askMax:10000, offerMin:5000, offerMax:6500,
+      limitLabel: "Lowest making charge he'll accept",
+      roundTo:250, direction:-1, urgencyBias:0.2,
+      neutralShiftRange:[100,400],
+      urgencyHints:{ high:"wants to close the sale before closing time", medium:"willing to discuss, not desperate", low:"confident in his craftsmanship, in no rush" },
+      moodHints:{ warm:"warming up, proud you noticed the craft", neutral:"steady, quoting standard rates", tense:"a little defensive about his work", annoyed:"getting impatient with haggling on his craft" },
+      moves:{
+        flaw:{ label:'Question the making charge', icon:'🔍', playerLines:["Other shops nearby quote lower making charges for similar work.","This design doesn't look that intricate for this charge.","I've seen simpler making charges elsewhere for this weight."], ownerLines:["This is handcrafted work, not machine-made, but — {ask}.","Every goldsmith prices differently, though — {ask}.","Fair point, let me adjust. {ask}."], dropBase:600, dropVar:500, trustBase:-4, trustVar:4 },
+        upfront:{ label:'Offer cash payment', icon:'💰', playerLines:["I'll pay the full amount in cash right now.","Cash payment, no card charges for you.","I can settle this entirely in cash today."], ownerLines:["Cash does help me, honestly. {ask}.","I appreciate that. {ask}.","That works well for me. {ask}."], dropBase:500, dropVar:400, trustBase:6, trustVar:4 },
+        connect:{ label:'Appreciate the craftsmanship', icon:'🤝', playerLines:["The detailing on this is genuinely beautiful work.","I can tell this took real skill to make.","This is exactly the kind of craftsmanship I was looking for."], ownerLines:["Thank you, I take real pride in this work. {ask}.","Not many people notice the detail, glad you did. {ask}.","That means a lot, honestly. {ask}."], dropBase:400, dropVar:300, trustBase:12, trustVar:5 },
+        firm:{ label:'Hold firm on your offer', icon:'✋', playerLines:["{offer} is what I've budgeted for making charges.","I can't go above {offer} on this.","{offer} is my limit, honestly."], ownerLines:["This is quality work, but — {ask}.","Alright, {ask}, for you specifically.","Okay, {ask}, I don't usually go this low."], dropBase:500, dropVar:400, trustBase:-5, trustVar:5 },
+        compromise:{ label:'Split the difference', icon:'⚖️', playerLines:["Let's settle the making charge at {mid}.","How about {mid}, fair for both of us?","{mid}, and I'll take it today."], acceptLines:["Alright, {ask}. Done.","Deal, {ask}.","Okay, {ask}, wrap it up."], partialLines:["Not quite, but {ask}?","Closer — {ask}.","I can do {ask}, not lower."], trustAccept:[2,6], trustPartial:[-3,0] }
+      }
+    },
+    olxListing: {
+      title: 'OLX Listing · Second-hand Laptop', icon:'📱', color:'#4A5D6B',
+      hook: 'A texted negotiation — casual, a little cagey.',
+      roleLabel: 'Seller',
+      voice: "A stranger selling on OLX — texts casually, a bit vague on specifics until pressed, wants a quick sale but doesn't want to seem desperate.",
+      openingOwnerTemplate: 'Asking {ask}, barely used.',
+      openingPlayerTemplate: "Would you take {offer}?",
+      askMin:32000, askMax:38000, offerMin:22000, offerMax:26000,
+      limitLabel: "Seller's lowest acceptable price",
+      roundTo:500, direction:-1, urgencyBias:0.5,
+      neutralShiftRange:[300,1000],
+      urgencyHints:{ high:"wants to sell fast, mentioned moving soon", medium:"responds quickly, seems engaged", low:"slow replies, in no real hurry" },
+      moodHints:{ warm:"friendlier, sending more details unprompted", neutral:"short replies, business-like", tense:"sounding a bit defensive about condition", annoyed:"replies getting curt" },
+      moves:{
+        flaw:{ label:'Ask about hidden issues', icon:'🔍', playerLines:["Any battery health issues or screen problems I should know about?","Does it have any dents or scratches not shown in the photos?","How old is the battery, honestly?"], ownerLines:["Battery's fine, minor wear on the corner, but — {ask}.","Nothing major, just normal use. {ask}.","It's honestly in good shape, but okay — {ask}."], dropBase:1200, dropVar:1000, trustBase:-3, trustVar:4 },
+        upfront:{ label:'Offer to pay and pick up today', icon:'💰', playerLines:["I can pay full amount and pick it up today.","Cash ready, I can come by this evening.","I'm free to collect it today if we agree now."], ownerLines:["Today works for me, honestly, one less thing to deal with. {ask}.","That's great, let's do that. {ask}.","Okay, {ask}, come by today then."], dropBase:1000, dropVar:800, trustBase:8, trustVar:4 },
+        connect:{ label:"Mention you'll take good care of it", icon:'🤝', playerLines:["I actually need this for work, so I'll take good care of it.","This is exactly the model I've been searching for.","I'm not just flipping it, I actually need it."], ownerLines:["Good, glad it's going to good use. {ask}.","That's nice to hear honestly. {ask}.","Okay, {ask}, hope it works out for you."], dropBase:800, dropVar:600, trustBase:10, trustVar:5 },
+        firm:{ label:'Hold firm on your offer', icon:'✋', playerLines:["{offer} is really what I can pay, sorry.","I can't go above {offer} for this.","{offer}, that's my final offer."], ownerLines:["Hmm, okay, {ask} then.","Alright, {ask}, I need to sell it anyway.","Fine, {ask}."], dropBase:1000, dropVar:800, trustBase:-3, trustVar:4 },
+        compromise:{ label:'Split the difference', icon:'⚖️', playerLines:["What if we just meet at {mid}?","How about {mid}, fair to both of us?","Let's settle at {mid} and be done."], acceptLines:["Okay, {ask} works.","Sure, {ask}, deal.","Alright, {ask}."], partialLines:["Can maybe do {ask}.","Not quite, but {ask}?","Closer — {ask}, okay?"], trustAccept:[2,6], trustPartial:[-2,1] }
+      }
+    },
+    mobileRepair: {
+      title: 'Mobile Repair · Cracked Screen', icon:'🔨', color:'#5C5C5C',
+      hook: 'Quick, practical — parts versus labor.',
+      roleLabel: 'Technician',
+      voice: "A mobile repair shop technician — quick, no-nonsense, talks in terms of parts cost versus labor, low patience for long negotiations since there's a queue of customers.",
+      openingOwnerTemplate: 'Screen replacement will be {ask}.',
+      openingPlayerTemplate: "I was hoping for around {offer}.",
+      askMin:2200, askMax:2800, offerMin:1400, offerMax:1800,
+      limitLabel: "Technician's lowest quote",
+      roundTo:100, direction:-1, urgencyBias:0.3,
+      neutralShiftRange:[50,200],
+      urgencyHints:{ high:"has a queue of customers, wants to move fast", medium:"steady pace, mildly engaged", low:"slow day, doesn't mind chatting" },
+      moodHints:{ warm:"friendlier, throwing in small extras", neutral:"quoting standard shop rates", tense:"sounding a bit short, busy", annoyed:"getting impatient with the haggling" },
+      moves:{
+        flaw:{ label:'Question the part quality', icon:'🔍', playerLines:["Is this an original part or a local one?","I've seen this exact repair cheaper elsewhere.","This model's part shouldn't cost that much."], ownerLines:["It's quality, but fine — {ask}.","Every shop prices differently, but — {ask}.","Okay, {ask}, still good quality though."], dropBase:150, dropVar:100, trustBase:-3, trustVar:4 },
+        upfront:{ label:'Offer to wait and pay cash', icon:'💰', playerLines:["I'll wait here and pay cash the moment it's done.","No need for a receipt, just cash on completion.","I can pay immediately once it's fixed."], ownerLines:["Cash works better for me, honestly. {ask}.","That's easier, {ask}.","Okay, {ask}, I'll get started."], dropBase:150, dropVar:100, trustBase:6, trustVar:4 },
+        connect:{ label:"Mention you'll be a repeat customer", icon:'🤝', playerLines:["I've got a few devices at home, might bring them here too.","If this goes well, I'll be back for sure.","I'd rather find one trustworthy shop than shop around."], ownerLines:["Good, I like repeat customers. {ask}.","Appreciate that, honestly. {ask}.","Okay, {ask}, glad to have you as a regular."], dropBase:100, dropVar:80, trustBase:10, trustVar:5 },
+        firm:{ label:'Hold firm on your offer', icon:'✋', playerLines:["{offer} is what I can pay, honestly.","I can't go above {offer} for this repair.","{offer}, that's my final offer."], ownerLines:["Alright, {ask}, just for you.","Fine, {ask}, let's get it done.","Okay, {ask}."], dropBase:120, dropVar:100, trustBase:-3, trustVar:4 },
+        compromise:{ label:'Split the difference', icon:'⚖️', playerLines:["Let's just settle at {mid}.","How about {mid}, fair enough?","{mid}, and let's get started."], acceptLines:["Okay, {ask}. Let's do it.","Deal, {ask}.","Alright, {ask}."], partialLines:["Not quite, but {ask}?","Closer — {ask}.","I can do {ask}, that's it."], trustAccept:[2,6], trustPartial:[-2,1] }
+      }
+    },
+    packersMovers: {
+      title: 'Packers & Movers · 2BHK Shift', icon:'📦', color:'#6B5A8A',
+      hook: 'Watch for the upsells — insurance, extra labor, packing material.',
+      roleLabel: 'Moving Agent',
+      voice: 'A moving company agent — sales-y and upbeat, keeps suggesting add-ons (insurance, extra packing, extra labor), genuinely wants your business but pads the quote if you let him.',
+      openingOwnerTemplate: 'Full package quote comes to {ask}.',
+      openingPlayerTemplate: "I was expecting closer to {offer}, honestly.",
+      askMin:18000, askMax:22000, offerMin:12000, offerMax:15000,
+      limitLabel: "Agent's lowest acceptable quote",
+      roundTo:500, direction:-1, urgencyBias:0.4,
+      neutralShiftRange:[300,1000],
+      urgencyHints:{ high:"needs to fill the truck schedule this week", medium:"open to discussing, steady business", low:"fully booked elsewhere, in no rush for your job" },
+      moodHints:{ warm:"friendly, throwing in extras", neutral:"sticking to the standard quote", tense:"sounding a bit defensive about pricing", annoyed:"getting short about the haggling" },
+      moves:{
+        flaw:{ label:'Question the add-ons', icon:'🔍', playerLines:["Do I really need the insurance add-on for a local move?","This quote seems to include a lot of things I didn't ask for.","I don't need the extra packing material option."], ownerLines:["Insurance is optional, fair enough. {ask}.","I can trim that down. {ask}.","Okay, removing that — {ask}."], dropBase:1200, dropVar:900, trustBase:-3, trustVar:4 },
+        upfront:{ label:'Offer to pay in full upfront', icon:'💰', playerLines:["I can pay the entire amount upfront if that helps.","Full payment now, no installments needed.","I'll settle the whole thing today."], ownerLines:["That helps us plan the truck schedule. {ask}.","Appreciate that, honestly. {ask}.","Okay, {ask}, that works well."], dropBase:1000, dropVar:800, trustBase:6, trustVar:4 },
+        connect:{ label:'Mention future moves', icon:'🤝', playerLines:["I might need your services again for another shift later this year.","I'll definitely recommend you if this goes smoothly.","This won't be my last time needing movers."], ownerLines:["Future business is worth a lot to us. {ask}.","Good to know, appreciate that. {ask}.","Okay, {ask}, hope to work with you again."], dropBase:800, dropVar:600, trustBase:10, trustVar:5 },
+        firm:{ label:'Hold firm on your offer', icon:'✋', playerLines:["{offer} is really my budget for this move.","I can't go above {offer} for this.","{offer}, that's my final number."], ownerLines:["Alright, {ask}, let's make this work.","Fine, {ask}, for your move.","Okay, {ask}."], dropBase:1200, dropVar:900, trustBase:-4, trustVar:4 },
+        compromise:{ label:'Split the difference', icon:'⚖️', playerLines:["Let's settle at {mid} for everything.","How about {mid}, fair for both of us?","Meet me at {mid} and let's book it."], acceptLines:["Alright, {ask}. Let's book it.","Deal, {ask}.","Okay, {ask}, sounds good."], partialLines:["Not quite, but {ask}?","Closer — {ask}.","I can do {ask}, that's it."], trustAccept:[2,6], trustPartial:[-3,0] }
+      }
+    },
+    weddingVenue: {
+      title: 'Wedding Venue · Banquet Hall', icon:'💒', color:'#8A3B5C',
+      hook: 'Big stakes, big bundling — dates, catering, décor all in play.',
+      roleLabel: 'Venue Manager',
+      voice: 'A wedding venue manager — polished, sales-oriented, bundles catering/décor/date flexibility into the pitch, treats big weddings as a competitive, high-stakes sale.',
+      openingOwnerTemplate: 'Full package for your date comes to {ask}.',
+      openingPlayerTemplate: "We were hoping to stay closer to {offer}.",
+      askMin:480000, askMax:550000, offerMin:340000, offerMax:390000,
+      limitLabel: "Venue's lowest acceptable quote",
+      roundTo:5000, direction:-1, urgencyBias:0.5,
+      neutralShiftRange:[3000,10000],
+      urgencyHints:{ high:"has other couples interested in your date", medium:"open to negotiating, steady bookings", low:"date's flexible, in no rush to fill it" },
+      moodHints:{ warm:"getting excited about your wedding vision", neutral:"sticking to the standard package", tense:"sounding a bit defensive about pricing", annoyed:"getting short about the back and forth" },
+      moves:{
+        flaw:{ label:'Question package inclusions', icon:'🔍', playerLines:["This package includes things we don't actually need.","We don't need the full décor package, just basics.","Some of these add-ons feel unnecessary for our guest count."], ownerLines:["We can definitely customize that. {ask}.","Fair, let me adjust the package. {ask}.","Okay, trimming that down — {ask}."], dropBase:15000, dropVar:10000, trustBase:-4, trustVar:4 },
+        upfront:{ label:'Offer flexible dates', icon:'💰', playerLines:["We're flexible on the date if that gets us a better rate.","An off-peak date works fine for us, if it helps.","We can shift to a weekday if that changes things."], ownerLines:["Flexible dates really help us fill gaps. {ask}.","That opens things up nicely. {ask}.","Okay, {ask}, for that flexibility."], dropBase:20000, dropVar:15000, trustBase:6, trustVar:4 },
+        connect:{ label:'Share your vision for the day', icon:'🤝', playerLines:["We've dreamed about this venue for our wedding for years.","This place means a lot to our family, honestly.","We really want this day to be special here specifically."], ownerLines:["That means a lot to hear, honestly. {ask}.","We love hosting couples who truly want to be here. {ask}.","Okay, that changes things a bit for us. {ask}."], dropBase:12000, dropVar:9000, trustBase:12, trustVar:5 },
+        firm:{ label:'Hold firm on your budget', icon:'✋', playerLines:["{offer} is genuinely our budget for the venue.","We can't go above {offer} for this.","{offer} is our final number, honestly."], ownerLines:["Let me see what we can do — {ask}.","We're firm generally, but — {ask}.","Okay, {ask}, that's a stretch for us."], dropBase:15000, dropVar:10000, trustBase:-5, trustVar:5 },
+        compromise:{ label:'Meet in the middle', icon:'⚖️', playerLines:["Let's land at {mid} for the full package.","How about {mid}, fair for both of us?","We're close — {mid} and we're ready to book."], acceptLines:["Alright, {ask}. Let's lock in your date.","Deal, {ask}.","Okay, {ask}, let's finalize."], partialLines:["Not quite, but {ask}?","Closer — {ask}, does that work?","We can stretch to {ask}, that's it."], trustAccept:[2,6], trustPartial:[-3,1] }
+      }
+    },
+    weddingPhotographer: {
+      title: 'Wedding Photographer · Full Day', icon:'📷', color:'#3F5C6B',
+      hook: "Creative pricing — they defend on skill, not just market rate.",
+      roleLabel: 'Photographer',
+      voice: 'A wedding photographer — creative-professional, defends pricing based on style and portfolio rather than just market comparisons, genuinely passionate about their craft.',
+      openingOwnerTemplate: 'Full-day coverage is {ask}.',
+      openingPlayerTemplate: "We were hoping for closer to {offer}.",
+      askMin:85000, askMax:105000, offerMin:55000, offerMax:65000,
+      limitLabel: "Photographer's lowest acceptable rate",
+      roundTo:2500, direction:-1, urgencyBias:0.3,
+      neutralShiftRange:[1000,3000],
+      urgencyHints:{ high:"has a gap in the calendar around your date", medium:"open to discussing, steady bookings", low:"fully booked most weekends, in no rush" },
+      moodHints:{ warm:"getting excited about your love story", neutral:"sticking to standard packages", tense:"sounding a bit defensive about their pricing", annoyed:"sounding short about pushback on their craft" },
+      moves:{
+        flaw:{ label:'Question package inclusions', icon:'🔍', playerLines:["Do we really need a second shooter for our guest count?","We don't need the printed album, just digital files.","This package has more hours than we actually need."], ownerLines:["We can definitely adjust the package. {ask}.","Fair, let me trim that down. {ask}.","Okay, removing that — {ask}."], dropBase:3000, dropVar:2000, trustBase:-4, trustVar:4 },
+        upfront:{ label:'Offer full payment upfront', icon:'💰', playerLines:["We can pay the full amount upfront to lock this in.","Full payment now if that secures our date.","We're ready to pay in full today."], ownerLines:["That definitely helps me plan my calendar. {ask}.","I appreciate that, honestly. {ask}.","Okay, {ask}, let's lock in your date."], dropBase:2500, dropVar:2000, trustBase:6, trustVar:4 },
+        connect:{ label:'Share your story with them', icon:'🤝', playerLines:["Your style is exactly the vibe we wanted for our wedding.","We've followed your work for a while, it really speaks to us.","We want someone who'll genuinely capture our day, not just shoot it."], ownerLines:["That really means a lot, honestly. {ask}.","I love working with couples who connect with my style. {ask}.","Okay, that changes things a bit for me. {ask}."], dropBase:2000, dropVar:1500, trustBase:12, trustVar:5 },
+        firm:{ label:'Hold firm on your budget', icon:'✋', playerLines:["{offer} is genuinely our budget for photography.","We can't go above {offer} for this.","{offer} is our final number, honestly."], ownerLines:["Let me see what I can do — {ask}.","I'm usually firm, but — {ask}.","Okay, {ask}, that's a stretch for me."], dropBase:3000, dropVar:2000, trustBase:-5, trustVar:5 },
+        compromise:{ label:'Meet in the middle', icon:'⚖️', playerLines:["Let's land at {mid} for full-day coverage.","How about {mid}, fair for both of us?","We're close — {mid} and we're ready to book."], acceptLines:["Alright, {ask}. Let's lock in your date.","Deal, {ask}.","Okay, {ask}, let's finalize."], partialLines:["Not quite, but {ask}?","Closer — {ask}, does that work?","I can stretch to {ask}, that's it."], trustAccept:[2,6], trustPartial:[-3,1] }
+      }
+    }
+  };
+  function getDailyScenarioKey(){
+    const keys = Object.keys(SCENARIOS);
+    const d = new Date();
+    const seed = d.getFullYear()*372 + (d.getMonth()+1)*31 + d.getDate();
+    return keys[seed % keys.length];
+  }
+
+  // ============================================================
+  // IMAGE URLs — PASTE YOUR ARTWORK LINKS HERE
+  // ============================================================
+  const STREAK_IMAGE_URL = "PASTE_STREAK_IMAGE_URL_HERE";
+  const WON_IMAGE_URL    = "PASTE_WON_IMAGE_URL_HERE";
+  const SCENARIO_IMAGES = {
+    rent:                "IMAGES/rents.png",
+    rickshaw:            "IMAGES/auto.png",
+    salary:              "IMAGES/salary.png",
+    bazaar:              "IMAGES/shop.png",
+    usedcar:             "IMAGES/car.png",
+    rentRenewal:         "IMAGES/rentrenewal.png",
+    rwaParking:          "IMAGES/parking.png",
+    brokerFee:           "IMAGES/brokerfee.png",
+    outstationCab:       "IMAGES/cabs.png",
+    usedBike:            "IMAGES/bikes.png",
+    freelanceRate:       "IMAGES/free.png",
+    instagramDeal:       "IMAGES/insta.png",
+    tutoringFee:         "IMAGES/fee.png",
+    sabziMandi:          "IMAGES/bazaar.png",
+    jewelleryMaking:     "IMAGES/JEWELLERY.png",
+    olxListing:          "IMAGES/hand.png",
+    mobileRepair:        "IMAGES/mobile.png",
+    packersMovers:       "IMAGES/movers.png",
+    weddingVenue:        "IMAGEs/weddings.png",
+    weddingPhotographer: "IMAGES/photo.png"
+  };
+
+  function isRealUrl(u){ return typeof u === 'string' && u.length > 0 && u.indexOf('PASTE_') !== 0; }
+
+  Object.keys(SCENARIOS).forEach(function(key){
+    SCENARIOS[key].imageUrl = SCENARIO_IMAGES[key] || '';
+  });
+  
+  function fmt(n){ if(n===null||n===undefined||isNaN(n)) return '—'; return '₹' + Math.round(n).toLocaleString('en-IN'); }
+
+  function loadBriefing() {
+    const urlParams = new URLSearchParams(window.location.search);
+    const key = urlParams.get('scenario') || 'rent';
+    const sc = SCENARIOS[key];
+
+    const titleParts = sc.title.split(' · ');
+    document.getElementById('briefTag').textContent = titleParts[0] || sc.title;
+    document.getElementById('briefTitle').textContent = titleParts[1] || '';
+    document.getElementById('briefRoleLabel').textContent = sc.roleLabel;
+    
+    const mockAsk = sc.askMin;
+    const mockOffer = sc.offerMax;
+    
+    const askFmt = fmt(mockAsk);
+    const offerFmt = fmt(mockOffer);
+    const ownerText = sc.openingOwnerTemplate.replace(/\{ask\}/g, askFmt).replace(/\{offer\}/g, offerFmt);
+    const playerText = sc.openingPlayerTemplate.replace(/\{ask\}/g, askFmt).replace(/\{offer\}/g, offerFmt);
+
+    document.getElementById('briefOwnerBubble').textContent = ownerText;
+    document.getElementById('briefYouBubble').textContent = playerText;
+    document.getElementById('briefGap').textContent = fmt(Math.abs(mockAsk - mockOffer));
+    
+    const diffEl = document.getElementById('briefDiff');
+    diffEl.textContent = 'Medium';
+    diffEl.className = 'diff-pill diff-medium';
+
+    const avatarEmoji = document.getElementById('briefAvatarEmoji');
+    const avatarEl = document.getElementById('briefAvatar');
+    avatarEmoji.textContent = sc.icon || '🙂';
+    avatarEl.style.background = '#FCFAF5';
+    avatarEl.style.boxShadow = '0 0 0 2px #E1D2B2, inset 0 -3px 6px rgba(0,0,0,0.06)';
+
+    document.getElementById('startBtn').onclick = function() {
+      window.location.href = 'negotiate.html?scenario=' + key;
+    };
+  }
+
+  window.addEventListener('load', loadBriefing);
+</script>
+</body>
+</html>

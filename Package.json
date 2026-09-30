@@ -1,0 +1,13 @@
+{
+    "name": "mol-bhav",
+    "version": "1.0.0",
+    "description": "Mol Bhav negotiation game with AI-generated dialogue",
+    "main": "server.js",
+    "scripts": {
+      "start": "node server.js"
+    },
+    "dependencies": {
+      "dotenv": "^16.4.5",
+      "express": "^4.19.2"
+    }
+  }
