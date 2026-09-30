@@ -287,9 +287,19 @@
   #startBtn:hover .arrow{ transform:translateX(4px); }
 
   @media (max-width:480px){
-    .phone{ padding:14px 12px; border-radius:0; height:100vh; max-height:none; box-shadow:none; }
-    body{ padding:0; }
-    #screen-briefing{ margin:-14px -12px; padding:16px 14px; border-radius:0; }
+    html, body{
+      margin:0; padding:0; height:100%;
+      background:linear-gradient(180deg, var(--home-1) 0%, var(--home-1) 72%, var(--home-2) 100%);
+    }
+    .phone{
+      width:100%; padding:0; border-radius:0;
+      height:100vh; height:100dvh; min-height:0; max-height:none; box-shadow:none;
+    }
+    #screen-briefing{
+      margin:0;
+      padding:calc(16px + env(safe-area-inset-top, 0px)) 14px calc(16px + env(safe-area-inset-bottom, 0px));
+      border-radius:0;
+    }
     .chat-header-name{ font-size:15.5px; }
     .chat-header-sub{ font-size:12px; }
     .brief-info-row{ gap:20px; }

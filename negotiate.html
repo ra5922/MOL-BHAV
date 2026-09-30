@@ -35,17 +35,7 @@
   *{ box-sizing:border-box; margin:0; padding:0; }
   button{ font-family:inherit; -webkit-tap-highlight-color:transparent; }
   html,body{ height:100%; }
-  /* ---- page + phone shell (same as your other screens) ---- */
-  body{
-    min-height:100vh; display:flex; align-items:center; justify-content:center;
-    background:
-      radial-gradient(circle at 20% 15%, rgba(217,164,65,0.10), transparent 40%),
-      radial-gradient(circle at 85% 80%, rgba(166,71,46,0.12), transparent 45%),
-      linear-gradient(160deg, 
-#1E2438, 
-#141828);
-    font-family:'Manrope', sans-serif; color:var(--white); padding:24px 12px;
-  }
+
   .confirm-overlay{
   position:absolute; inset:0; background:rgba(0,0,0,0.55);
   display:none; align-items:center; justify-content:center; z-index:200;
@@ -65,6 +55,17 @@
 .confirm-cancel:hover{ background:rgba(255,255,255,0.22); }
 .confirm-leave{ background:var(--yellow); color:#000; }
 .confirm-leave:hover{ background:#f3c67e; }
+ /* ---- page + phone shell (same as your other screens) ---- */
+ body{
+    min-height:100vh; display:flex; align-items:center; justify-content:center;
+    background:
+      radial-gradient(circle at 20% 15%, rgba(217,164,65,0.10), transparent 40%),
+      radial-gradient(circle at 85% 80%, rgba(166,71,46,0.12), transparent 45%),
+      linear-gradient(160deg, 
+#1E2438, 
+#141828);
+    font-family:'Manrope', sans-serif; color:var(--white); padding:24px 12px;
+  }
   .phone{
     width:min(420px,100%); height:92vh; min-height:680px; max-height:920px;
     border-radius:26px; overflow:hidden; position:relative;
